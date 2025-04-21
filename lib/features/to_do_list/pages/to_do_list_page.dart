@@ -14,6 +14,7 @@ class _ToDoListState extends State<ToDoList> {
   final TextEditingController controller = TextEditingController();
   List<Task> tasks = [];
   DateTime selectedDate = DateTime.now();
+  DateTime selectedDate2 = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
