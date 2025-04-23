@@ -5,7 +5,7 @@ import 'package:my_the_best_project/features/auth/pages/reset_password.dart';
 import 'package:my_the_best_project/features/auth/pages/verify_email.dart';
 import 'package:my_the_best_project/features/home/pages/account_page.dart';
 import 'package:my_the_best_project/features/home/pages/navigation_tabbar.dart';
-import 'package:my_the_best_project/features/to_do_list/pages/to_do_week.dart';
+import 'package:my_the_best_project/features/to_do_week/to_do_week.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [

@@ -26,6 +26,24 @@ class _WeekCalendarState extends State<WeekCalendar> {
     super.initState();
     selectedDate = widget.startDate;
     _pageController = PageController(initialPage: initialPage);
+
+    _pageController.addListener(() {
+      final page = _pageController.page;
+      if (page != null) {
+        final weekOffset = page.toInt() - initialPage;
+        final monday = getWeekDays(weekOffset).first;
+        if (!isSameDay(selectedDate, monday)) {
+          setState(() {
+            selectedDate = monday;
+          });
+          widget.onDateSelected(monday);
+        }
+      }
+    });
+  }
+
+  bool isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   @override
@@ -51,22 +69,44 @@ class _WeekCalendarState extends State<WeekCalendar> {
         itemBuilder: (context, index) {
           final weekOffset = index - initialPage;
           final weekDays = getWeekDays(weekOffset);
-
           final monday =
               weekDays.firstWhere((d) => d.weekday == DateTime.monday);
           final sunday =
               weekDays.firstWhere((d) => d.weekday == DateTime.sunday);
 
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildDayWidget(monday),
-              const SizedBox(width: 12),
-              const Icon(Icons.arrow_back_rounded, size: 16),
-              const Icon(Icons.arrow_forward_rounded, size: 16),
-              const SizedBox(width: 12),
-              _buildDayWidget(sunday),
-            ],
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Colors.blueAccent,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blueAccent.withOpacity(0.4),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                )
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildDayWidget(monday),
+                const SizedBox(width: 12),
+                const Icon(
+                  Icons.arrow_back_rounded,
+                  size: 16,
+                  color: Colors.white,
+                ),
+                const Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 16,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 12),
+                _buildDayWidget(sunday),
+              ],
+            ),
           );
         },
       ),
@@ -92,7 +132,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
             DateFormat.E().format(date).toUpperCase(),
             style: const TextStyle(
               fontSize: 12,
-              color: Colors.grey,
+              color: Colors.white,
             ),
           ),
           Text(
@@ -100,7 +140,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.black : Colors.black,
+              color: isSelected ? Colors.white : Colors.white,
             ),
           ),
         ],

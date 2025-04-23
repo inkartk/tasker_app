@@ -19,13 +19,31 @@ class _ToDoCalendarState extends State<ToDoCalendar> {
   late PageController _pageController;
   late DateTime selectedDate;
   final int totalWeeks = 100;
-  final int initialPage = 50; // середина — текущая неделя
+  final int initialPage = 50;
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.startDate;
     _pageController = PageController(initialPage: initialPage);
+
+    _pageController.addListener(() {
+      final page = _pageController.page;
+      if (page != null) {
+        final weekOffset = page.toInt() - initialPage;
+        final monday = getWeekDays(weekOffset).first;
+        if (!isSameDay(selectedDate, monday)) {
+          setState(() {
+            selectedDate = monday;
+          });
+          widget.onDateSelected(monday);
+        }
+      }
+    });
+  }
+
+  bool isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   @override

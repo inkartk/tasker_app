@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_the_best_project/features/to_do_list/models/to_do_week_model.dart';
-import 'package:my_the_best_project/features/to_do_list/widgets/week_calendar.dart';
+import 'package:my_the_best_project/features/todo/domain/entity/to_do_list_entity.dart';
+import 'package:my_the_best_project/features/todo/presentation/widgets/calendar.dart';
 
-class ToDoWeek extends StatefulWidget {
-  const ToDoWeek({super.key});
+class ToDoList extends StatefulWidget {
+  const ToDoList({super.key});
 
   @override
-  State<ToDoWeek> createState() => _ToDoWeekState();
+  State<ToDoList> createState() => _ToDoListState();
 }
 
-class _ToDoWeekState extends State<ToDoWeek> {
+class _ToDoListState extends State<ToDoList> {
   final TextEditingController controller = TextEditingController();
-  List<TaskWeek> tasks = [];
+  List<Task> tasks = [];
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -27,17 +27,25 @@ class _ToDoWeekState extends State<ToDoWeek> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Weekly Task'),
+        title: const Text('Daily Task'),
+        centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-            onPressed: () {
-              context.go('/');
-            },
+            onPressed: () {},
             icon: const Icon(
-              Icons.arrow_back_ios,
+              Icons.person,
               size: 30,
             )),
         actions: [
+          IconButton(
+            onPressed: () {
+              context.go('/to_do_week');
+            },
+            icon: const Icon(
+              Icons.menu,
+              size: 30,
+            ),
+          ),
           IconButton(
             onPressed: () {
               showAddTaskSheet(context);
@@ -51,7 +59,7 @@ class _ToDoWeekState extends State<ToDoWeek> {
       ),
       body: Column(
         children: [
-          WeekCalendar(
+          ToDoCalendar(
             startDate: DateTime.now(),
             onDateSelected: (date) {
               setState(() {
@@ -77,7 +85,7 @@ class _ToDoWeekState extends State<ToDoWeek> {
                   ),
                   onDismissed: (direction) {
                     setState(() {
-                      tasks.remove(task); // удаляем из общего списка
+                      tasks.remove(task);
                     });
                   },
                   child: ListTile(
@@ -100,7 +108,7 @@ class _ToDoWeekState extends State<ToDoWeek> {
                       ),
                     ),
                     leading: Text(
-                      '${index + 1}.',
+                      '${index + 1}.', // ✅ теперь правильный локальный индекс
                       style: TextStyle(
                         fontSize: 18,
                         color: task.isDone ? Colors.grey : Colors.black,
@@ -167,7 +175,11 @@ class _ToDoWeekState extends State<ToDoWeek> {
                   final text = controller.text.trim();
                   if (text.isNotEmpty) {
                     setState(() {
-                      tasks.add(TaskWeek(title: text, date: selectedDate));
+                      tasks.add(Task(
+                          id: DateTime.now().millisecondsSinceEpoch.toString(),
+                          title: text,
+                          date: selectedDate,
+                          isDone: false));
                     });
                     controller.clear();
                     Navigator.pop(context);
