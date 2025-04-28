@@ -8,6 +8,8 @@ abstract class LocalDataSource {
   Future<void> addTask(Task task);
   Future<void> deleteTask(Task task);
   Future<List<TaskModel>> getTaskForDay(DateTime day);
+  Future<List<TaskModel>> getAllTasks();
+  Future<void> saveTasks(List<TaskModel> tasks);
 }
 
 const CACHED_TASK_LIST = 'CACHED_TASK_LIST';
@@ -58,5 +60,20 @@ class LocalDataSourceImpl implements LocalDataSource {
     }).toList();
 
     return filteredTasks;
+  }
+
+  @override
+  Future<List<TaskModel>> getAllTasks() async {
+    final jsonTaskList =
+        sharedPreferences.getStringList(CACHED_TASK_LIST) ?? [];
+    return jsonTaskList.map((jsonStr) {
+      return TaskModel.fromJson(jsonDecode(jsonStr));
+    }).toList();
+  }
+
+  @override
+  Future<void> saveTasks(List<TaskModel> tasks) async {
+    final jsonList = tasks.map((model) => jsonEncode(model.toJson())).toList();
+    await sharedPreferences.setStringList(CACHED_TASK_LIST, jsonList);
   }
 }

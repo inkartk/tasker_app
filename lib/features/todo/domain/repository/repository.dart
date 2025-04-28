@@ -4,4 +4,5 @@ abstract class Repository {
   Future<void> addTask(Task task);
   Future<void> deleteTask(Task task);
   Future<List<Task>> getTaskForDay(DateTime day);
+  Future<void> updateTask(Task task);
 }
