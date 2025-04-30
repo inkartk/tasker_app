@@ -1,79 +1,80 @@
-import 'dart:convert';
-
+import 'package:drift/drift.dart';
+import 'package:my_the_best_project/features/todo/data/data_source/local_data_source/app_database.dart';
 import 'package:my_the_best_project/features/todo/data/models/task_model.dart';
 import 'package:my_the_best_project/features/todo/domain/entity/to_do_list_entity.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class LocalDataSource {
   Future<void> addTask(Task task);
   Future<void> deleteTask(Task task);
   Future<List<TaskModel>> getTaskForDay(DateTime day);
   Future<List<TaskModel>> getAllTasks();
-  Future<void> saveTasks(List<TaskModel> tasks);
+  Future<void> updateTask(Task task);
 }
 
-const CACHED_TASK_LIST = 'CACHED_TASK_LIST';
-
 class LocalDataSourceImpl implements LocalDataSource {
-  final SharedPreferences sharedPreferences;
+  final AppDatabase database;
 
-  LocalDataSourceImpl({required this.sharedPreferences});
+  LocalDataSourceImpl({required this.database});
 
   @override
   Future<void> addTask(Task task) async {
-    final jsonTaskList =
-        sharedPreferences.getStringList(CACHED_TASK_LIST) ?? [];
-
-    final taskModel = TaskModel.fromEntity(task);
-    jsonTaskList.add(jsonEncode(taskModel.toJson()));
-    await sharedPreferences.setStringList(CACHED_TASK_LIST, jsonTaskList);
+    await database.insertTask(
+      TasksCompanion(
+        title: Value(task.title),
+        isDone: Value(task.isDone),
+        date: Value(task.date),
+      ),
+    );
   }
 
   @override
   Future<void> deleteTask(Task task) async {
-    final jsonTaskList =
-        sharedPreferences.getStringList(CACHED_TASK_LIST) ?? [];
-
-    jsonTaskList.removeWhere((jsonStr) {
-      final taskModel = TaskModel.fromJson(jsonDecode(jsonStr));
-      return taskModel.id == task.id;
-    });
-
-    await sharedPreferences.setStringList(CACHED_TASK_LIST, jsonTaskList);
+    await (database.delete(database.tasks)
+          ..where((tbl) => tbl.id.equals(task.id)))
+        .go();
   }
 
   @override
   Future<List<TaskModel>> getTaskForDay(DateTime day) async {
-    final jsonTaskList = sharedPreferences.getStringList(CACHED_TASK_LIST);
+    final allTasks = await database.getAllTasks();
 
-    if (jsonTaskList == null) return [];
-
-    final allTasks = jsonTaskList.map((task) {
-      final model = TaskModel.fromJson(jsonDecode(task));
-      return model;
-    }).toList();
-
-    final filteredTasks = allTasks.where((task) {
-      return task.date.day == day.day &&
-          task.date.month == day.month &&
-          task.date.year == day.year;
-    }).toList();
-
-    return filteredTasks;
+    return allTasks
+        .where((task) =>
+            task.date.year == day.year &&
+            task.date.month == day.month &&
+            task.date.day == day.day)
+        .map((e) => TaskModel(
+              id: e.id,
+              title: e.title,
+              isDone: e.isDone,
+              date: e.date,
+            ))
+        .toList();
   }
 
   @override
   Future<List<TaskModel>> getAllTasks() async {
-    final jsonTaskList =
-        sharedPreferences.getStringList(CACHED_TASK_LIST) ?? [];
-    return jsonTaskList.map((jsonStr) {
-      return TaskModel.fromJson(jsonDecode(jsonStr));
-    }).toList();
+    final allTasks = await database.getAllTasks();
+
+    return allTasks
+        .map((e) => TaskModel(
+              id: e.id,
+              title: e.title,
+              isDone: e.isDone,
+              date: e.date,
+            ))
+        .toList();
   }
 
   @override
-  Future<void> saveTasks(List<TaskModel> tasks) async {
-    final jsonList = tasks.map((model) => jsonEncode(model.toJson())).toList();
-    await sharedPreferences.setStringList(CACHED_TASK_LIST, jsonList);
+  Future<void> updateTask(Task task) async {
+    await database.updateTask(
+      TaskEntity(
+        id: task.id,
+        title: task.title,
+        isDone: task.isDone,
+        date: task.date,
+      ),
+    );
   }
 }

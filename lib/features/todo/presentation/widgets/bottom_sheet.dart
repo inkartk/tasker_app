@@ -62,15 +62,13 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 final text = controller.text.trim();
                 if (text.isNotEmpty) {
                   final newTask = Task(
-                    id: DateTime.now().millisecondsSinceEpoch.toString(),
+                    id: 0,
                     title: text,
                     date: widget.selectedDate,
                     isDone: false,
                   );
+
                   context.read<TaskBloc>().add(TaskAddEvent(task: newTask));
-                  context
-                      .read<TaskBloc>()
-                      .add(TaskGetEvent(day: widget.selectedDate));
                   Navigator.pop(context);
                 }
               },

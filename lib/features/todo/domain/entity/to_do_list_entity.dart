@@ -1,5 +1,5 @@
 class Task {
-  final String id;
+  final int id;
   final String title;
   final DateTime date;
   bool isDone;
@@ -11,7 +11,7 @@ class Task {
       required this.isDone});
 
   Task copyWith({
-    String? id,
+    int? id,
     String? title,
     DateTime? date,
     bool? isDone,

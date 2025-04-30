@@ -80,6 +80,9 @@ class _ToDoListState extends State<ToDoList> {
                       state is TaskUpdatingState) {
                     return const Center(child: Text(''));
                   }
+                  if (state is TaskErrorState) {
+                    return Center(child: Text('Ошибка: ${state.taskError}'));
+                  }
 
                   final filteredTasks =
                       (state is TaskLoadedState) ? state.taskList : [];

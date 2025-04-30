@@ -11,13 +11,13 @@ class RepositoryImpl extends Repository {
   @override
   Future<void> addTask(Task task) async {
     final model = TaskModel.fromEntity(task);
-    await localDataSource.addTask(model); // добавил await
+    await localDataSource.addTask(model);
   }
 
   @override
   Future<void> deleteTask(Task task) async {
     final model = TaskModel.fromEntity(task);
-    await localDataSource.deleteTask(model); // добавил await
+    await localDataSource.deleteTask(model);
   }
 
   @override
@@ -28,14 +28,6 @@ class RepositoryImpl extends Repository {
 
   @override
   Future<void> updateTask(Task task) async {
-    final allTasks =
-        await localDataSource.getAllTasks(); // поменял на getAllTasks
-    final updatedTasks = allTasks.map((taskModel) {
-      if (taskModel.id == task.id) {
-        return TaskModel.fromEntity(task); // заменяем на новый
-      }
-      return taskModel;
-    }).toList();
-    await localDataSource.saveTasks(updatedTasks);
+    await localDataSource.updateTask(task);
   }
 }
