@@ -2,7 +2,11 @@
     <application
         android:label="my_the_best_project"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        <meta-data
+    android:name="com.google.android.gms.auth.api.credentials.CREDENTIAL_PICKER_SHOW_CANCEL_BUTTON"
+    android:value="true"/>
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"

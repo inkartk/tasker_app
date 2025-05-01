@@ -13,6 +13,7 @@ class Tasks extends Table {
   TextColumn get title => text().withLength(min: 1, max: 255)();
   BoolColumn get isDone => boolean().withDefault(const Constant(false))();
   DateTimeColumn get date => dateTime()();
+  TextColumn get userId => text()();
 }
 
 @DriftDatabase(tables: [Tasks])
@@ -20,7 +21,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   Future<List<TaskEntity>> getAllTasks() => select(tasks).get();
   Future<int> insertTask(TasksCompanion task) => into(tasks).insert(task);
@@ -32,6 +33,11 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'app.db'));
+
+    if (file.existsSync()) {
+      await file.delete();
+    }
+
     return NativeDatabase(file);
   });
 }

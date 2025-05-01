@@ -1,8 +1,11 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_the_best_project/features/auth/widgets/snackbar.dart';
+import 'package:my_the_best_project/gen/assets.gen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,8 +16,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isHiddenPassword = true;
-  TextEditingController emailTextInputController = TextEditingController();
-  TextEditingController passwordTextInputController = TextEditingController();
+  final emailTextInputController = TextEditingController();
+  final passwordTextInputController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -40,88 +43,208 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordTextInputController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      print(e);
-
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
         SnackBarService.showSnackBar(
           context,
           'Неправильный email или пароль. Повторите попытку',
           true,
         );
-        return;
       } else {
         SnackBarService.showSnackBar(
           context,
           'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
           true,
         );
-        return;
       }
+      return;
     }
 
-    context.go('/home');
+    context.go('/main');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login Page'),
-      ),
-      body: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              autocorrect: false,
-              controller: emailTextInputController,
-              validator: ((email) =>
-                  email != null && !EmailValidator.validate(email)
-                      ? 'Введите правильный email'
-                      : null),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Введите Email',
-              ),
-            ),
-            TextFormField(
-              autocorrect: false,
-              obscureText: isHiddenPassword,
-              controller: passwordTextInputController,
-              validator: ((password) => password != null && password.length < 6
-                  ? 'Минимум 6 символов'
-                  : null),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  hintText: 'Введите Пароль',
-                  suffix: InkWell(
-                    onTap: togglePassword,
-                    child: Icon(
-                      isHiddenPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: Colors.black,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 40),
+
+                Text(
+                  'TASK-WAN',
+                  style: GoogleFonts.righteous(
+                    fontSize: 30,
+                    color: const Color(0xFF006EE9),
+                  ),
+                ),
+                Text(
+                  'Management App',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF9A9A9A),
+                  ),
+                ),
+
+                const SizedBox(height: 60),
+
+                Text(
+                  'Login to your account',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                TextFormField(
+                  controller: emailTextInputController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    filled: true,
+                    fillColor: const Color(0xFFEFF5FB),
+                    hintStyle: GoogleFonts.poppins(color: Colors.black54),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
-                  )),
+                    prefixIcon:
+                        const Icon(Icons.email, color: Color(0xFF006EE9)),
+                  ),
+                  validator: (email) =>
+                      email != null && !EmailValidator.validate(email)
+                          ? 'Введите правильный email'
+                          : null,
+                ),
+                const SizedBox(height: 20),
+
+                TextFormField(
+                  controller: passwordTextInputController,
+                  obscureText: isHiddenPassword,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    filled: true,
+                    fillColor: const Color(0xFFEFF5FB),
+                    hintStyle: GoogleFonts.poppins(color: Colors.black54),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon:
+                        const Icon(Icons.lock, color: Color(0xFF006EE9)),
+                    suffixIcon: IconButton(
+                      onPressed: togglePassword,
+                      icon: Icon(
+                        isHiddenPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ),
+                  validator: (password) =>
+                      password != null && password.length < 6
+                          ? 'Минимум 6 символов'
+                          : null,
+                ),
+
+                // Forgot password
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => context.go('/reset-email'),
+                    child: Text(
+                      'Forgot password?',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: const Color(0xFF87ADF4),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // Login button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: login,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF006EE9),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Login',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 35),
+
+                Text(
+                  '- Or Login with -',
+                  style: GoogleFonts.poppins(fontSize: 16),
+                ),
+
+                const SizedBox(height: 30),
+
+                // Social Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SvgPicture.asset(
+                      Assets.icons.googles,
+                      width: 30,
+                      height: 30,
+                    ),
+                    SvgPicture.asset(
+                      Assets.icons.facebook,
+                      width: 30,
+                      height: 30,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+
+                // Sign up
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Don’t have an account? ',
+                      style: GoogleFonts.poppins(fontSize: 14),
+                    ),
+                    TextButton(
+                      onPressed: () => context.go('/register'),
+                      child: Text(
+                        'Sign Up',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: const Color(0xFF006EE9),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            ElevatedButton(
-                onPressed: () {
-                  context.go('/home');
-                },
-                child: const Text('Войти')),
-            TextButton(
-                onPressed: () {
-                  context.go('/reset_password');
-                },
-                child: const Text('Забыли пароль?')),
-            TextButton(
-                onPressed: () {
-                  context.go('/register');
-                },
-                child: const Text('Регистрация')),
-          ],
+          ),
         ),
       ),
     );

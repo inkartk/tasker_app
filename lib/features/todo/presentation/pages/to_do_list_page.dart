@@ -33,7 +33,9 @@ class _ToDoListState extends State<ToDoList> {
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                context.go('/account');
+              },
               icon: const Icon(
                 Icons.person,
                 size: 30,

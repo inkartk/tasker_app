@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_the_best_project/features/todo/data/data_source/local_data_source/app_database.dart';
 import 'package:my_the_best_project/features/todo/data/models/task_model.dart';
 import 'package:my_the_best_project/features/todo/domain/entity/to_do_list_entity.dart';
@@ -23,6 +24,7 @@ class LocalDataSourceImpl implements LocalDataSource {
         title: Value(task.title),
         isDone: Value(task.isDone),
         date: Value(task.date),
+        userId: Value(FirebaseAuth.instance.currentUser!.uid),
       ),
     );
   }
@@ -35,26 +37,37 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
+  @override
   Future<List<TaskModel>> getTaskForDay(DateTime day) async {
-    final allTasks = await database.getAllTasks();
+    final uid = FirebaseAuth.instance.currentUser!.uid;
 
-    return allTasks
-        .where((task) =>
-            task.date.year == day.year &&
-            task.date.month == day.month &&
-            task.date.day == day.day)
+    final start = DateTime(day.year, day.month, day.day);
+    final end = DateTime(day.year, day.month, day.day + 1);
+
+    final tasks = await (database.select(database.tasks)
+          ..where((tbl) =>
+              tbl.userId.equals(uid) &
+              tbl.date.isBiggerOrEqualValue(start) &
+              tbl.date.isSmallerThanValue(end)))
+        .get();
+
+    return tasks
         .map((e) => TaskModel(
               id: e.id,
               title: e.title,
               isDone: e.isDone,
               date: e.date,
+              userId: e.userId,
             ))
         .toList();
   }
 
   @override
   Future<List<TaskModel>> getAllTasks() async {
-    final allTasks = await database.getAllTasks();
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final allTasks = await (database.select(database.tasks)
+          ..where((tbl) => tbl.userId.equals(uid)))
+        .get();
 
     return allTasks
         .map((e) => TaskModel(
@@ -62,6 +75,7 @@ class LocalDataSourceImpl implements LocalDataSource {
               title: e.title,
               isDone: e.isDone,
               date: e.date,
+              userId: e.userId,
             ))
         .toList();
   }
@@ -70,11 +84,11 @@ class LocalDataSourceImpl implements LocalDataSource {
   Future<void> updateTask(Task task) async {
     await database.updateTask(
       TaskEntity(
-        id: task.id,
-        title: task.title,
-        isDone: task.isDone,
-        date: task.date,
-      ),
+          id: task.id,
+          title: task.title,
+          isDone: task.isDone,
+          date: task.date,
+          userId: task.userId),
     );
   }
 }

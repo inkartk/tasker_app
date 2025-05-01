@@ -39,8 +39,13 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
-  List<GeneratedColumn> get $columns => [id, title, isDone, date];
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, title, isDone, date, userId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -70,6 +75,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
     return context;
   }
 
@@ -87,6 +98,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
           .read(DriftSqlType.bool, data['${effectivePrefix}is_done'])!,
       date: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
     );
   }
 
@@ -101,11 +114,13 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
   final String title;
   final bool isDone;
   final DateTime date;
+  final String userId;
   const TaskEntity(
       {required this.id,
       required this.title,
       required this.isDone,
-      required this.date});
+      required this.date,
+      required this.userId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -113,6 +128,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     map['title'] = Variable<String>(title);
     map['is_done'] = Variable<bool>(isDone);
     map['date'] = Variable<DateTime>(date);
+    map['user_id'] = Variable<String>(userId);
     return map;
   }
 
@@ -122,6 +138,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       title: Value(title),
       isDone: Value(isDone),
       date: Value(date),
+      userId: Value(userId),
     );
   }
 
@@ -133,6 +150,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       title: serializer.fromJson<String>(json['title']),
       isDone: serializer.fromJson<bool>(json['isDone']),
       date: serializer.fromJson<DateTime>(json['date']),
+      userId: serializer.fromJson<String>(json['userId']),
     );
   }
   @override
@@ -143,15 +161,22 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       'title': serializer.toJson<String>(title),
       'isDone': serializer.toJson<bool>(isDone),
       'date': serializer.toJson<DateTime>(date),
+      'userId': serializer.toJson<String>(userId),
     };
   }
 
-  TaskEntity copyWith({int? id, String? title, bool? isDone, DateTime? date}) =>
+  TaskEntity copyWith(
+          {int? id,
+          String? title,
+          bool? isDone,
+          DateTime? date,
+          String? userId}) =>
       TaskEntity(
         id: id ?? this.id,
         title: title ?? this.title,
         isDone: isDone ?? this.isDone,
         date: date ?? this.date,
+        userId: userId ?? this.userId,
       );
   TaskEntity copyWithCompanion(TasksCompanion data) {
     return TaskEntity(
@@ -159,6 +184,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       title: data.title.present ? data.title.value : this.title,
       isDone: data.isDone.present ? data.isDone.value : this.isDone,
       date: data.date.present ? data.date.value : this.date,
+      userId: data.userId.present ? data.userId.value : this.userId,
     );
   }
 
@@ -168,13 +194,14 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('isDone: $isDone, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('userId: $userId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, isDone, date);
+  int get hashCode => Object.hash(id, title, isDone, date, userId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -182,7 +209,8 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           other.id == this.id &&
           other.title == this.title &&
           other.isDone == this.isDone &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.userId == this.userId);
 }
 
 class TasksCompanion extends UpdateCompanion<TaskEntity> {
@@ -190,30 +218,36 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
   final Value<String> title;
   final Value<bool> isDone;
   final Value<DateTime> date;
+  final Value<String> userId;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.isDone = const Value.absent(),
     this.date = const Value.absent(),
+    this.userId = const Value.absent(),
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     this.isDone = const Value.absent(),
     required DateTime date,
+    required String userId,
   })  : title = Value(title),
-        date = Value(date);
+        date = Value(date),
+        userId = Value(userId);
   static Insertable<TaskEntity> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<bool>? isDone,
     Expression<DateTime>? date,
+    Expression<String>? userId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (isDone != null) 'is_done': isDone,
       if (date != null) 'date': date,
+      if (userId != null) 'user_id': userId,
     });
   }
 
@@ -221,12 +255,14 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
       {Value<int>? id,
       Value<String>? title,
       Value<bool>? isDone,
-      Value<DateTime>? date}) {
+      Value<DateTime>? date,
+      Value<String>? userId}) {
     return TasksCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       isDone: isDone ?? this.isDone,
       date: date ?? this.date,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -245,6 +281,9 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
     return map;
   }
 
@@ -254,7 +293,8 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('isDone: $isDone, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('userId: $userId')
           ..write(')'))
         .toString();
   }
@@ -276,12 +316,14 @@ typedef $$TasksTableCreateCompanionBuilder = TasksCompanion Function({
   required String title,
   Value<bool> isDone,
   required DateTime date,
+  required String userId,
 });
 typedef $$TasksTableUpdateCompanionBuilder = TasksCompanion Function({
   Value<int> id,
   Value<String> title,
   Value<bool> isDone,
   Value<DateTime> date,
+  Value<String> userId,
 });
 
 class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
@@ -303,6 +345,9 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
 
   ColumnFilters<DateTime> get date => $composableBuilder(
       column: $table.date, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
 }
 
 class $$TasksTableOrderingComposer
@@ -325,6 +370,9 @@ class $$TasksTableOrderingComposer
 
   ColumnOrderings<DateTime> get date => $composableBuilder(
       column: $table.date, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
 }
 
 class $$TasksTableAnnotationComposer
@@ -347,6 +395,9 @@ class $$TasksTableAnnotationComposer
 
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
 }
 
 class $$TasksTableTableManager extends RootTableManager<
@@ -376,24 +427,28 @@ class $$TasksTableTableManager extends RootTableManager<
             Value<String> title = const Value.absent(),
             Value<bool> isDone = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
+            Value<String> userId = const Value.absent(),
           }) =>
               TasksCompanion(
             id: id,
             title: title,
             isDone: isDone,
             date: date,
+            userId: userId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String title,
             Value<bool> isDone = const Value.absent(),
             required DateTime date,
+            required String userId,
           }) =>
               TasksCompanion.insert(
             id: id,
             title: title,
             isDone: isDone,
             date: date,
+            userId: userId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

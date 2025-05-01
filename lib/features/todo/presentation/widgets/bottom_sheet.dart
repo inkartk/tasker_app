@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_the_best_project/features/todo/domain/entity/to_do_list_entity.dart';
@@ -16,6 +17,7 @@ class AddTaskBottomSheet extends StatefulWidget {
 class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   final TextEditingController controller = TextEditingController();
 
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   @override
   void dispose() {
     controller.dispose();
@@ -62,16 +64,18 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 final text = controller.text.trim();
                 if (text.isNotEmpty) {
                   final newTask = Task(
-                    id: 0,
-                    title: text,
-                    date: widget.selectedDate,
-                    isDone: false,
-                  );
+                      id: 0,
+                      title: text,
+                      date: widget.selectedDate,
+                      isDone: false,
+                      userId: userId);
 
                   context.read<TaskBloc>().add(TaskAddEvent(task: newTask));
                   Navigator.pop(context);
                 }
               },
+              // inkar.tkk@gmail.com
+              // kairatvnna@gmail.com
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 backgroundColor: Colors.blueAccent,
