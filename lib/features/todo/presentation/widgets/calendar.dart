@@ -26,28 +26,26 @@ class _ToDoCalendarState extends State<ToDoCalendar> {
     super.initState();
     selectedDate = widget.startDate;
     _pageController = PageController(initialPage: initialPage);
-
-    _pageController.addListener(() {
-      final page = _pageController.page;
-      if (page != null) {
-        final weekOffset = page.toInt() - initialPage;
-        final monday = getWeekDays(weekOffset).first;
-        if (!isSameDay(selectedDate, monday)) {
-          setState(() {
-            selectedDate = monday;
-          });
-          widget.onDateSelected(monday);
-        }
-      }
-    });
+    _pageController.addListener(_onPageScroll);
   }
 
-  bool isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
+  void _onPageScroll() {
+    final page = _pageController.page;
+    if (page == null) return;
+    final weekOffset = page.toInt() - initialPage;
+    final monday = getWeekDays(weekOffset).first;
+    if (!_isSameDay(selectedDate, monday)) {
+      setState(() => selectedDate = monday);
+      widget.onDateSelected(monday);
+    }
   }
+
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   @override
   void dispose() {
+    _pageController.removeListener(_onPageScroll);
     _pageController.dispose();
     super.dispose();
   }
@@ -62,60 +60,60 @@ class _ToDoCalendarState extends State<ToDoCalendar> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 70,
+      height: 80,
       child: PageView.builder(
         controller: _pageController,
         itemCount: totalWeeks,
         itemBuilder: (context, index) {
           final weekOffset = index - initialPage;
-          final weekDays = getWeekDays(weekOffset);
-
+          final days = getWeekDays(weekOffset);
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: weekDays.map((date) {
-              final isSelected = selectedDate.year == date.year &&
-                  selectedDate.month == date.month &&
-                  selectedDate.day == date.day;
-
+            children: days.map((date) {
+              final isSelected = _isSameDay(selectedDate, date);
               return GestureDetector(
                 onTap: () {
-                  setState(() {
-                    selectedDate = date;
-                  });
+                  setState(() => selectedDate = date);
                   widget.onDateSelected(date);
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  width: 45,
+                  width: 60,
+                  height: isSelected ? 70 : 60,
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.blueAccent : Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      if (isSelected)
-                        BoxShadow(
-                          color: Colors.blueAccent.withOpacity(0.4),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        )
-                    ],
+                    color: isSelected
+                        ? const Color(0xFF105CDB)
+                        : const Color(0xFF105CDB).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: const Color(0xFF105CDB).withOpacity(0.3),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            )
+                          ]
+                        : null,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        DateFormat.E().format(date).toUpperCase(),
+                        DateFormat.E().format(date),
                         style: TextStyle(
                           fontSize: 12,
-                          color: isSelected ? Colors.white : Colors.grey,
+                          fontWeight: FontWeight.w500,
+                          color: isSelected ? Colors.white : Colors.blueAccent,
                         ),
                       ),
+                      const SizedBox(height: 4),
                       Text(
                         date.day.toString(),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isSelected ? Colors.white : Colors.black,
+                          color: isSelected ? Colors.white : Colors.blueAccent,
                         ),
                       ),
                     ],

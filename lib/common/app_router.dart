@@ -6,7 +6,6 @@ import 'package:my_the_best_project/features/auth/pages/verify_code.dart';
 import 'package:my_the_best_project/features/auth/widgets/firebase_stream.dart';
 import 'package:my_the_best_project/features/home/pages/account_page.dart';
 import 'package:my_the_best_project/features/home/pages/navigation_tabbar.dart';
-import 'package:my_the_best_project/features/to_do_week/to_do_week.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [
@@ -15,10 +14,6 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const FirebaseStream(),
     ),
     GoRoute(path: '/reset-email', builder: (_, __) => const ResetPassword()),
-    GoRoute(
-      path: '/to_do_week',
-      builder: (context, state) => const ToDoWeek(),
-    ),
     GoRoute(
       path: '/account',
       builder: (context, state) => const AccountPage(),

@@ -1,11 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_the_best_project/features/auth/widgets/snackbar.dart';
-import 'package:my_the_best_project/gen/assets.gen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -196,31 +194,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 const SizedBox(height: 35),
-
-                Text(
-                  '- Or Login with -',
-                  style: GoogleFonts.poppins(fontSize: 16),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Social Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SvgPicture.asset(
-                      Assets.icons.googles,
-                      width: 30,
-                      height: 30,
-                    ),
-                    SvgPicture.asset(
-                      Assets.icons.facebook,
-                      width: 30,
-                      height: 30,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
 
                 // Sign up
                 Row(
