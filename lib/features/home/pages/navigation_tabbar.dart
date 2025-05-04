@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_the_best_project/features/home/pages/calendar_task_page.dart';
-import 'package:my_the_best_project/features/home/tabbar_pages/ai_chat_page.dart';
+import 'package:my_the_best_project/features/daily_task/presentation/pages/calendar_task_page.dart';
+import 'package:my_the_best_project/features/home/pages/ai_chat_page.dart';
 import 'package:my_the_best_project/features/todo/presentation/pages/to_do_list_page.dart';
 
 class NavigationTabBar extends StatefulWidget {

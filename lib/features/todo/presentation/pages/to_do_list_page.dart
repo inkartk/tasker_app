@@ -5,7 +5,6 @@ import 'package:my_the_best_project/features/todo/presentation/bloc/task_bloc.da
 import 'package:my_the_best_project/features/todo/presentation/bloc/task_event.dart';
 import 'package:my_the_best_project/features/todo/presentation/bloc/task_state.dart';
 import 'package:my_the_best_project/features/todo/presentation/widgets/bottom_sheet.dart';
-import 'package:my_the_best_project/features/todo/presentation/widgets/calendar.dart';
 
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
@@ -63,15 +62,6 @@ class _ToDoListState extends State<ToDoList> {
         ),
         body: Column(
           children: [
-            ToDoCalendar(
-              startDate: DateTime.now(),
-              onDateSelected: (date) {
-                setState(() {
-                  selectedDate = date;
-                });
-                context.read<TaskBloc>().add(TaskGetEvent(day: date));
-              },
-            ),
             const SizedBox(height: 20),
             Expanded(
               child: BlocBuilder<TaskBloc, TaskState>(

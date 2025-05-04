@@ -19,7 +19,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       try {
         await addTask(event.task);
 
-        // После добавления сразу получить все таски и перезалить их
         final tasks = await getTask(event.task.date);
 
         final filteredTasks = tasks
@@ -34,7 +33,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           return a.isDone ? 1 : -1;
         });
 
-        emit(TaskLoadedState(taskList: filteredTasks)); // перезаписываем список
+        emit(TaskLoadedState(taskList: filteredTasks));
       } catch (e) {
         emit(TaskErrorState(taskError: e.toString()));
       }
