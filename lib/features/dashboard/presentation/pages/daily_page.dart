@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:my_the_best_project/features/daily_task/domain/entity/daily_task.dart';
+import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
+import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
+import 'package:my_the_best_project/features/dashboard/presentation/widgets/detail_widgets.dart';
+
+const _primaryColor = Color(0xFF105CDB);
+
+class DailyTaskDetailPage extends StatelessWidget {
+  final DailyTask task;
+  const DailyTaskDetailPage({super.key, required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    // Calculate remaining time
+    final now = DateTime.now();
+    final remaining = task.endTime.difference(now);
+    final hours = remaining.inHours.clamp(0, 999);
+    final minutes = (remaining.inMinutes % 60).clamp(0, 59);
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header: icon, title, close
+              Row(
+                children: [
+                  const Icon(Icons.fitness_center,
+                      color: _primaryColor, size: 28),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      task.title,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: _primaryColor,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => context.go('/main'),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: _primaryColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.close, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
+              // Dates
+              Row(
+                children: [
+                  DateColumn(
+                      label: 'start',
+                      value: DateFormat('d MMM yyyy').format(task.startTime)),
+                  const Spacer(),
+                  DateColumn(
+                      label: 'end',
+                      value: DateFormat('d MMM yyyy').format(task.endTime)),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
+              // Countdown
+              Row(
+                children: [
+                  TimeBox(value: '$hours', label: 'hours'),
+                  const SizedBox(width: 16),
+                  TimeBox(value: '$minutes', label: 'minutes'),
+                ],
+              ),
+
+              const SizedBox(height: 32),
+
+              // Description
+              const Text(
+                'Description',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                task.description,
+                style: const TextStyle(
+                    fontSize: 14, color: Colors.black87, height: 1.4),
+              ),
+
+              const SizedBox(height: 32),
+
+              // Finish button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: task.isDone
+                      ? null
+                      : () {
+                          // mark as done
+                          final updated = task.copyWith(isDone: true);
+                          context
+                              .read<DailyTaskBloc>()
+                              .add(EditDailyTaskEvent(dailyTask: updated));
+                          context.go('/main');
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    task.isDone ? 'Finished' : 'Finish',
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

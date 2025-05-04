@@ -1,7 +1,5 @@
 // lib/features/daily_task/data/local_data_source/daily_task_local_data_source.dart
 
-import 'dart:convert';
-
 import 'package:drift/drift.dart';
 
 import '../../domain/entity/daily_task.dart';
@@ -28,16 +26,11 @@ class DailyTaskLocalDataSourceImpl implements DailyTaskLocalDataSource {
       endTime: Value(task.endTime),
       category: Value(task.category),
       isDone: Value(task.isDone),
-      subTasksJson: Value(jsonEncode(task.subTasks)),
+      // Передаём сам список, а не JSON-строку:
+      subTasksJson: Value(task.subTasks),
     );
     final newId = await db.addDailyTask(companion);
     return task.copyWith(id: newId);
-  }
-
-  @override
-  Future<void> deleteDailyTask(DailyTask task) {
-    assert(task.id != null, 'Для удаления нужен id задачи');
-    return db.deleteDailyTask(task.id!);
   }
 
   @override
@@ -52,7 +45,8 @@ class DailyTaskLocalDataSourceImpl implements DailyTaskLocalDataSource {
       endTime: task.endTime,
       category: task.category,
       isDone: task.isDone,
-      subTasksJson: jsonEncode(task.subTasks),
+      // Передаём список подзадач:
+      subTasksJson: task.subTasks,
     );
     return db.updateDailyTask(entity);
   }
@@ -61,8 +55,6 @@ class DailyTaskLocalDataSourceImpl implements DailyTaskLocalDataSource {
   Future<List<DailyTask>> getDailyTask(DateTime day) async {
     final entities = await db.getTasksForDay(day);
     return entities.map((e) {
-      final list =
-          (json.decode(e.subTasksJson) as List<dynamic>).cast<String>();
       return DailyTask(
         id: e.id,
         userID: e.userId,
@@ -72,8 +64,15 @@ class DailyTaskLocalDataSourceImpl implements DailyTaskLocalDataSource {
         endTime: e.endTime,
         category: e.category,
         isDone: e.isDone,
-        subTasks: list,
+        // Drift вернёт вам готовый List<SubTask>:
+        subTasks: e.subTasksJson,
       );
     }).toList();
+  }
+
+  @override
+  Future<void> deleteDailyTask(DailyTask task) {
+    assert(task.id != null, 'Для удаления нужен id задачи');
+    return db.deleteDailyTask(task.id!);
   }
 }

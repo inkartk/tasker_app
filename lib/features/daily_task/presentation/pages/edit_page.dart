@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:my_the_best_project/features/daily_task/domain/entity/daily_task.dart';
+import 'package:my_the_best_project/features/daily_task/domain/entity/subtasks.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_state.dart';
@@ -25,7 +26,7 @@ class EditTaskPage extends StatefulWidget {
 class _EditTaskPageState extends State<EditTaskPage> {
   late DateTime _startDate;
   late DateTime _endDate;
-  late int _selectedCategory; // 0 = Priority, 1 = Daily
+  late int _selectedCategory;
 
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
@@ -35,7 +36,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
   void initState() {
     super.initState();
 
-    // Инициализируем поля из переданной задачи
     final t = widget.task;
     _startDate = t.startTime;
     _endDate = t.endTime;
@@ -44,13 +44,13 @@ class _EditTaskPageState extends State<EditTaskPage> {
     _titleController.text = t.title;
     _descController.text = t.description;
 
-    // Если есть подзадачи — создаём контроллеры под каждую
     if (t.subTasks.isNotEmpty) {
       for (var sub in t.subTasks) {
-        _subControllers.add(TextEditingController(text: sub));
+        _subControllers.add(
+          TextEditingController(text: sub.title),
+        );
       }
     } else {
-      // если нет — одна пустая строка
       _subControllers.add(TextEditingController());
     }
   }
@@ -179,6 +179,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
     final subs = _subControllers
         .map((c) => c.text.trim())
         .where((s) => s.isNotEmpty)
+        .map((title) => SubTask(title: title))
         .toList();
 
     // Создаём updated задачу

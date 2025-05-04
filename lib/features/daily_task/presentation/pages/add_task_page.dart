@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:my_the_best_project/features/daily_task/domain/entity/daily_task.dart';
+import 'package:my_the_best_project/features/daily_task/domain/entity/subtasks.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_state.dart';
@@ -153,6 +154,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     final subs = _subControllers
         .map((c) => c.text.trim())
         .where((t) => t.isNotEmpty)
+        .map((t) => SubTask(title: t))
         .toList();
 
     final newTask = DailyTask(

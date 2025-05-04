@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/pages/calendar_task_page.dart';
-import 'package:my_the_best_project/features/home/pages/ai_chat_page.dart';
-import 'package:my_the_best_project/features/todo/presentation/pages/to_do_list_page.dart';
+import 'package:my_the_best_project/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:my_the_best_project/features/home/pages/account_page.dart';
 
 class NavigationTabBar extends StatefulWidget {
   const NavigationTabBar({super.key});
@@ -11,12 +11,12 @@ class NavigationTabBar extends StatefulWidget {
 }
 
 class _NavigationTabBarState extends State<NavigationTabBar> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const ToDoList(),
+    const DashboardPage(),
     const CalendarTaskPage(),
-    const AiChatPage(),
+    const AccountPage(),
   ];
 
   void _onItemTapped(int index) {

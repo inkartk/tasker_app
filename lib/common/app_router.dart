@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_the_best_project/common/di.dart';
 import 'package:my_the_best_project/features/auth/pages/login_page.dart';
 import 'package:my_the_best_project/features/auth/pages/register_page.dart';
 import 'package:my_the_best_project/features/auth/pages/reset_password.dart';
@@ -9,6 +11,9 @@ import 'package:my_the_best_project/features/daily_task/domain/entity/daily_task
 import 'package:my_the_best_project/features/daily_task/presentation/pages/add_task_page.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/pages/calendar_task_page.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/pages/edit_page.dart';
+import 'package:my_the_best_project/features/dashboard/presentation/bloc/detail_priority_bloc.dart';
+import 'package:my_the_best_project/features/dashboard/presentation/pages/daily_page.dart';
+import 'package:my_the_best_project/features/dashboard/presentation/pages/priority_page.dart';
 import 'package:my_the_best_project/features/home/pages/account_page.dart';
 import 'package:my_the_best_project/features/home/pages/navigation_tabbar.dart';
 
@@ -30,15 +35,43 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/edit_task',
       builder: (context, state) {
-        // ожидаем, что вы передаёте туда DailyTask через extra:
         final task = state.extra;
         if (task is! DailyTask) {
-          // на всякий случай — если кто-то зашёл без передачи extra
           return const Scaffold(
             body: Center(child: Text('Error: no task provided')),
           );
         }
         return EditTaskPage(task: task);
+      },
+    ),
+    GoRoute(
+      path: '/priority_page',
+      builder: (context, state) {
+        final extra = state.extra;
+        if (extra is! DailyTask) {
+          return const Scaffold(
+            body: Center(child: Text('Error: no task provided')),
+          );
+        }
+        final task = extra;
+        return BlocProvider<DetailPriorityTaskCubit>(
+          create: (_) => sl<DetailPriorityTaskCubit>(
+            param1: task,
+          ),
+          child: PriorityPage(initialTask: task),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/daily_page',
+      builder: (context, state) {
+        final task = state.extra;
+        if (task is! DailyTask) {
+          return const Scaffold(
+            body: Center(child: Text('Error: no task provided')),
+          );
+        }
+        return DailyTaskDetailPage(task: task);
       },
     ),
     GoRoute(

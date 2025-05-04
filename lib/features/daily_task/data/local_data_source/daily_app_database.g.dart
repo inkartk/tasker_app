@@ -76,11 +76,12 @@ class $DailyTasksTable extends DailyTasks
   static const VerificationMeta _subTasksJsonMeta =
       const VerificationMeta('subTasksJson');
   @override
-  late final GeneratedColumn<String> subTasksJson = GeneratedColumn<String>(
-      'sub_tasks_json', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('[]'));
+  late final GeneratedColumnWithTypeConverter<List<SubTask>, String>
+      subTasksJson = GeneratedColumn<String>(
+              'sub_tasks_json', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<SubTask>>(
+              $DailyTasksTable.$convertersubTasksJson);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -148,12 +149,7 @@ class $DailyTasksTable extends DailyTasks
       context.handle(_isDoneMeta,
           isDone.isAcceptableOrUnknown(data['is_done']!, _isDoneMeta));
     }
-    if (data.containsKey('sub_tasks_json')) {
-      context.handle(
-          _subTasksJsonMeta,
-          subTasksJson.isAcceptableOrUnknown(
-              data['sub_tasks_json']!, _subTasksJsonMeta));
-    }
+    context.handle(_subTasksJsonMeta, const VerificationResult.success());
     return context;
   }
 
@@ -179,8 +175,9 @@ class $DailyTasksTable extends DailyTasks
           .read(DriftSqlType.string, data['${effectivePrefix}category'])!,
       isDone: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_done'])!,
-      subTasksJson: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}sub_tasks_json'])!,
+      subTasksJson: $DailyTasksTable.$convertersubTasksJson.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}sub_tasks_json'])!),
     );
   }
 
@@ -188,6 +185,9 @@ class $DailyTasksTable extends DailyTasks
   $DailyTasksTable createAlias(String alias) {
     return $DailyTasksTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<List<SubTask>, String> $convertersubTasksJson =
+      const SubTaskListConverter();
 }
 
 class DailyTaskEntity extends DataClass implements Insertable<DailyTaskEntity> {
@@ -199,7 +199,7 @@ class DailyTaskEntity extends DataClass implements Insertable<DailyTaskEntity> {
   final DateTime endTime;
   final String category;
   final bool isDone;
-  final String subTasksJson;
+  final List<SubTask> subTasksJson;
   const DailyTaskEntity(
       {required this.id,
       required this.userId,
@@ -221,7 +221,10 @@ class DailyTaskEntity extends DataClass implements Insertable<DailyTaskEntity> {
     map['end_time'] = Variable<DateTime>(endTime);
     map['category'] = Variable<String>(category);
     map['is_done'] = Variable<bool>(isDone);
-    map['sub_tasks_json'] = Variable<String>(subTasksJson);
+    {
+      map['sub_tasks_json'] = Variable<String>(
+          $DailyTasksTable.$convertersubTasksJson.toSql(subTasksJson));
+    }
     return map;
   }
 
@@ -251,7 +254,7 @@ class DailyTaskEntity extends DataClass implements Insertable<DailyTaskEntity> {
       endTime: serializer.fromJson<DateTime>(json['endTime']),
       category: serializer.fromJson<String>(json['category']),
       isDone: serializer.fromJson<bool>(json['isDone']),
-      subTasksJson: serializer.fromJson<String>(json['subTasksJson']),
+      subTasksJson: serializer.fromJson<List<SubTask>>(json['subTasksJson']),
     );
   }
   @override
@@ -266,7 +269,7 @@ class DailyTaskEntity extends DataClass implements Insertable<DailyTaskEntity> {
       'endTime': serializer.toJson<DateTime>(endTime),
       'category': serializer.toJson<String>(category),
       'isDone': serializer.toJson<bool>(isDone),
-      'subTasksJson': serializer.toJson<String>(subTasksJson),
+      'subTasksJson': serializer.toJson<List<SubTask>>(subTasksJson),
     };
   }
 
@@ -279,7 +282,7 @@ class DailyTaskEntity extends DataClass implements Insertable<DailyTaskEntity> {
           DateTime? endTime,
           String? category,
           bool? isDone,
-          String? subTasksJson}) =>
+          List<SubTask>? subTasksJson}) =>
       DailyTaskEntity(
         id: id ?? this.id,
         userId: userId ?? this.userId,
@@ -351,7 +354,7 @@ class DailyTasksCompanion extends UpdateCompanion<DailyTaskEntity> {
   final Value<DateTime> endTime;
   final Value<String> category;
   final Value<bool> isDone;
-  final Value<String> subTasksJson;
+  final Value<List<SubTask>> subTasksJson;
   const DailyTasksCompanion({
     this.id = const Value.absent(),
     this.userId = const Value.absent(),
@@ -372,13 +375,14 @@ class DailyTasksCompanion extends UpdateCompanion<DailyTaskEntity> {
     required DateTime endTime,
     required String category,
     this.isDone = const Value.absent(),
-    this.subTasksJson = const Value.absent(),
+    required List<SubTask> subTasksJson,
   })  : userId = Value(userId),
         title = Value(title),
         description = Value(description),
         startTime = Value(startTime),
         endTime = Value(endTime),
-        category = Value(category);
+        category = Value(category),
+        subTasksJson = Value(subTasksJson);
   static Insertable<DailyTaskEntity> custom({
     Expression<int>? id,
     Expression<String>? userId,
@@ -412,7 +416,7 @@ class DailyTasksCompanion extends UpdateCompanion<DailyTaskEntity> {
       Value<DateTime>? endTime,
       Value<String>? category,
       Value<bool>? isDone,
-      Value<String>? subTasksJson}) {
+      Value<List<SubTask>>? subTasksJson}) {
     return DailyTasksCompanion(
       id: id ?? this.id,
       userId: userId ?? this.userId,
@@ -454,7 +458,8 @@ class DailyTasksCompanion extends UpdateCompanion<DailyTaskEntity> {
       map['is_done'] = Variable<bool>(isDone.value);
     }
     if (subTasksJson.present) {
-      map['sub_tasks_json'] = Variable<String>(subTasksJson.value);
+      map['sub_tasks_json'] = Variable<String>(
+          $DailyTasksTable.$convertersubTasksJson.toSql(subTasksJson.value));
     }
     return map;
   }
@@ -496,7 +501,7 @@ typedef $$DailyTasksTableCreateCompanionBuilder = DailyTasksCompanion Function({
   required DateTime endTime,
   required String category,
   Value<bool> isDone,
-  Value<String> subTasksJson,
+  required List<SubTask> subTasksJson,
 });
 typedef $$DailyTasksTableUpdateCompanionBuilder = DailyTasksCompanion Function({
   Value<int> id,
@@ -507,7 +512,7 @@ typedef $$DailyTasksTableUpdateCompanionBuilder = DailyTasksCompanion Function({
   Value<DateTime> endTime,
   Value<String> category,
   Value<bool> isDone,
-  Value<String> subTasksJson,
+  Value<List<SubTask>> subTasksJson,
 });
 
 class $$DailyTasksTableFilterComposer
@@ -543,8 +548,10 @@ class $$DailyTasksTableFilterComposer
   ColumnFilters<bool> get isDone => $composableBuilder(
       column: $table.isDone, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get subTasksJson => $composableBuilder(
-      column: $table.subTasksJson, builder: (column) => ColumnFilters(column));
+  ColumnWithTypeConverterFilters<List<SubTask>, List<SubTask>, String>
+      get subTasksJson => $composableBuilder(
+          column: $table.subTasksJson,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$DailyTasksTableOrderingComposer
@@ -618,8 +625,9 @@ class $$DailyTasksTableAnnotationComposer
   GeneratedColumn<bool> get isDone =>
       $composableBuilder(column: $table.isDone, builder: (column) => column);
 
-  GeneratedColumn<String> get subTasksJson => $composableBuilder(
-      column: $table.subTasksJson, builder: (column) => column);
+  GeneratedColumnWithTypeConverter<List<SubTask>, String> get subTasksJson =>
+      $composableBuilder(
+          column: $table.subTasksJson, builder: (column) => column);
 }
 
 class $$DailyTasksTableTableManager extends RootTableManager<
@@ -656,7 +664,7 @@ class $$DailyTasksTableTableManager extends RootTableManager<
             Value<DateTime> endTime = const Value.absent(),
             Value<String> category = const Value.absent(),
             Value<bool> isDone = const Value.absent(),
-            Value<String> subTasksJson = const Value.absent(),
+            Value<List<SubTask>> subTasksJson = const Value.absent(),
           }) =>
               DailyTasksCompanion(
             id: id,
@@ -678,7 +686,7 @@ class $$DailyTasksTableTableManager extends RootTableManager<
             required DateTime endTime,
             required String category,
             Value<bool> isDone = const Value.absent(),
-            Value<String> subTasksJson = const Value.absent(),
+            required List<SubTask> subTasksJson,
           }) =>
               DailyTasksCompanion.insert(
             id: id,

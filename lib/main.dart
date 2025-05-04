@@ -7,11 +7,6 @@ import 'package:my_the_best_project/common/app_router.dart';
 import 'package:my_the_best_project/common/di.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
-import 'package:my_the_best_project/features/todo/data/data_source/local_data_source/app_database.dart';
-import 'package:my_the_best_project/features/todo/presentation/bloc/task_bloc.dart';
-import 'package:my_the_best_project/features/todo/presentation/bloc/task_event.dart';
-
-late final AppDatabase database;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,11 +20,6 @@ Future<void> main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        // старый ToDo-BLoC — для вкладки To Do List
-        BlocProvider<TaskBloc>(
-          create: (_) => sl<TaskBloc>()..add(TaskGetEvent(day: DateTime.now())),
-        ),
-        // новый DailyTaskBloc — для календаря и AddTaskPage
         BlocProvider<DailyTaskBloc>(
           create: (_) =>
               sl<DailyTaskBloc>()..add(LoadDailyTaskEvent(day: DateTime.now())),

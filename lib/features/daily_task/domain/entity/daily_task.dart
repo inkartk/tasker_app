@@ -1,3 +1,5 @@
+import 'package:my_the_best_project/features/daily_task/domain/entity/subtasks.dart';
+
 class DailyTask {
   final int? id;
   final String userID;
@@ -7,7 +9,7 @@ class DailyTask {
   final DateTime endTime;
   final String category;
   final bool isDone;
-  final List<String> subTasks;
+  final List<SubTask> subTasks;
 
   DailyTask({
     this.id,
@@ -18,8 +20,8 @@ class DailyTask {
     required this.endTime,
     required this.category,
     required this.isDone,
-    List<String>? subTasks,
-  }) : subTasks = subTasks ?? [];
+    List<SubTask>? subTasks,
+  }) : subTasks = subTasks ?? <SubTask>[];
 
   DailyTask copyWith({
     int? id,
@@ -30,7 +32,7 @@ class DailyTask {
     DateTime? endTime,
     String? category,
     bool? isDone,
-    List<String>? subTasks,
+    List<SubTask>? subTasks,
   }) {
     return DailyTask(
       id: id ?? this.id,

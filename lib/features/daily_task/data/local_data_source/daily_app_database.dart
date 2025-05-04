@@ -1,9 +1,11 @@
 // lib/features/daily_task/data/local_data_source/daily_app_database.dart
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:my_the_best_project/features/daily_task/domain/entity/subtasks.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -20,7 +22,24 @@ class DailyTasks extends Table {
   TextColumn get category => text().withLength(min: 1, max: 255)();
   BoolColumn get isDone => boolean().withDefault(const Constant(false))();
 
-  TextColumn get subTasksJson => text().withDefault(const Constant('[]'))();
+  TextColumn get subTasksJson => text().map(const SubTaskListConverter())();
+}
+
+class SubTaskListConverter extends TypeConverter<List<SubTask>, String> {
+  const SubTaskListConverter();
+
+  @override
+  List<SubTask> fromSql(String fromDb) {
+    final List<dynamic> decoded = jsonDecode(fromDb) as List<dynamic>;
+    return decoded
+        .map((e) => SubTask.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  String toSql(List<SubTask> value) {
+    return jsonEncode(value.map((e) => e.toJson()).toList());
+  }
 }
 
 @DriftDatabase(tables: [DailyTasks])
@@ -28,7 +47,7 @@ class DailyAppDatabase extends _$DailyAppDatabase {
   DailyAppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
