@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_the_best_project/common/di.dart';
 import 'package:my_the_best_project/features/auth/pages/login_page.dart';
+import 'package:my_the_best_project/features/auth/pages/navigation_tabbar.dart';
 import 'package:my_the_best_project/features/auth/pages/register_page.dart';
 import 'package:my_the_best_project/features/auth/pages/reset_password.dart';
 import 'package:my_the_best_project/features/auth/pages/verify_code.dart';
@@ -14,8 +15,8 @@ import 'package:my_the_best_project/features/daily_task/presentation/pages/edit_
 import 'package:my_the_best_project/features/dashboard/presentation/bloc/detail_priority_bloc.dart';
 import 'package:my_the_best_project/features/dashboard/presentation/pages/daily_page.dart';
 import 'package:my_the_best_project/features/dashboard/presentation/pages/priority_page.dart';
-import 'package:my_the_best_project/features/home/pages/account_page.dart';
-import 'package:my_the_best_project/features/home/pages/navigation_tabbar.dart';
+import 'package:my_the_best_project/features/profile/pages/account_page.dart';
+import 'package:my_the_best_project/features/profile/pages/profile_page.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [
@@ -88,7 +89,17 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/main',
-      builder: (context, state) => const NavigationTabBar(),
+      name: 'main',
+      pageBuilder: (context, state) {
+        final index = int.tryParse(state.uri.queryParameters['tab'] ?? '') ?? 0;
+        return MaterialPage(
+          child: NavigationTabBar(initialIndex: index),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/profile_page',
+      builder: (_, __) => const ProfilePage(),
     ),
     GoRoute(
       path: '/verify-code',

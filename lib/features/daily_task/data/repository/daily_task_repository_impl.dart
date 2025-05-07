@@ -22,7 +22,7 @@ class DailyTaskRepositoryImpl implements DailyTaskRepository {
   }
 
   @override
-  Future<List<DailyTask>> getDailyTask(DateTime day) {
-    return localDs.getDailyTask(day);
+  Future<List<DailyTask>> getDailyTask(String userID, DateTime day) {
+    return localDs.getDailyTask(userID, day);
   }
 }

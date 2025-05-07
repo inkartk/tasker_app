@@ -106,8 +106,11 @@ class _EditTaskPageState extends State<EditTaskPage> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.calendar_today,
-                      size: 20, color: Colors.blueAccent),
+                  const Icon(
+                    Icons.calendar_today,
+                    size: 20,
+                    color: Color(0xFF105CDB),
+                  ),
                   const SizedBox(width: 8),
                   Text(DateFormat('MMM d, yyyy').format(date),
                       style: const TextStyle(fontSize: 14)),
@@ -139,14 +142,16 @@ class _EditTaskPageState extends State<EditTaskPage> {
       child: Container(
         height: 48,
         decoration: BoxDecoration(
-          color: isSel ? Colors.blueAccent : Colors.transparent,
+          color: isSel ? const Color(0xFF105CDB) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.blueAccent),
+          border: Border.all(
+            color: const Color(0xFF105CDB),
+          ),
         ),
         alignment: Alignment.center,
         child: Text(text,
             style: TextStyle(
-              color: isSel ? Colors.white : Colors.blueAccent,
+              color: isSel ? Colors.white : const Color(0xFF105CDB),
               fontWeight: FontWeight.w500,
             )),
       ),
@@ -175,14 +180,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
       return;
     }
 
-    // Собираем непустые подзадачи
     final subs = _subControllers
         .map((c) => c.text.trim())
         .where((s) => s.isNotEmpty)
         .map((title) => SubTask(title: title))
         .toList();
 
-    // Создаём updated задачу
     final updated = widget.task.copyWith(
       title: _titleController.text.trim(),
       description: _descController.text.trim(),
@@ -192,21 +195,23 @@ class _EditTaskPageState extends State<EditTaskPage> {
       subTasks: subs,
     );
 
-    // Шлём в BLoC
     context.read<DailyTaskBloc>().add(EditDailyTaskEvent(dailyTask: updated));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: const Color(0xFF105CDB),
       appBar: AppBar(
         title: const Text('Edit Task',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.blueAccent,
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Colors.white)),
+        backgroundColor: const Color(0xFF105CDB),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => context.go('/calendar_page'),
+          onPressed: () => context.go('/main?tab=1'),
         ),
       ),
       body: SafeArea(
@@ -224,7 +229,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Заголовок с иконкой
                     Row(
                       children: [
                         const Icon(Icons.task_alt,
@@ -242,7 +246,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                     ),
 
                     const SizedBox(height: 24),
-                    // Даты
                     Row(children: [
                       _buildDateField(
                           'Start', _startDate, () => _pickDate(context, true)),
@@ -251,36 +254,51 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           'Ends', _endDate, () => _pickDate(context, false)),
                     ]),
                     const SizedBox(height: 24),
-                    // Title Field
+                    const Text('Title',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF105CDB),
+                        )),
                     TextField(
                       controller: _titleController,
-                      decoration: _inputDecoration('Title'),
+                      decoration: _inputDecoration(''),
                     ),
                     const SizedBox(height: 24),
-                    // Category
                     const Text('Category',
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF105CDB),
+                        )),
+                    const SizedBox(height: 6),
                     _buildCategoryToggle(),
                     const SizedBox(height: 24),
-                    // Description
+                    const Text('Description',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF105CDB),
+                        )),
                     TextField(
                       controller: _descController,
-                      decoration: _inputDecoration('Description'),
+                      decoration: _inputDecoration(''),
                       maxLines: 5,
                     ),
                     const SizedBox(height: 24),
 
-                    // To do list (только для Priority)
+                    // === только для Priority Task ===
                     if (_selectedCategory == 0) ...[
                       const Text('To do list',
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF105CDB),
+                          )),
                       const SizedBox(height: 12),
-                      ..._subControllers.asMap().entries.map((e) {
-                        final i = e.key;
-                        final ctrl = e.value;
+                      ..._subControllers.asMap().entries.map((entry) {
+                        final i = entry.key;
+                        final ctrl = entry.value;
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           child: Row(children: [
@@ -288,7 +306,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               child: TextField(
                                 controller: ctrl,
                                 decoration: InputDecoration(
-                                  hintText: 'Sub-task ${i + 1}',
                                   filled: true,
                                   fillColor: Colors.grey.shade100,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -312,21 +329,23 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           ]),
                         );
                       }),
-                      TextButton.icon(
+                      IconButton(
+                        alignment: Alignment.topRight,
                         onPressed: () => setState(() {
                           _subControllers.add(TextEditingController());
                         }),
-                        icon: const Icon(Icons.add_circle_outline),
-                        label: const Text('Add sub-task'),
+                        icon: const Icon(
+                          Icons.add_circle_outline,
+                          color: Color(0xFF105CDB),
+                        ),
                       ),
                       const SizedBox(height: 24),
                     ],
 
-                    // Кнопка Save
                     BlocConsumer<DailyTaskBloc, DailyTaskState>(
                       listener: (ctx, state) {
                         if (state is DailyTaskLoaded) {
-                          context.go('/calendar_page');
+                          context.go('/main?tab=1');
                         }
                         if (state is DailyTaskErrorState) {
                           ScaffoldMessenger.of(ctx).showSnackBar(
@@ -339,6 +358,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                         return ElevatedButton(
                           onPressed: loading ? null : _onSavePressed,
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF105CDB),
                             minimumSize: const Size.fromHeight(48),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -350,7 +370,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                   child:
                                       CircularProgressIndicator(strokeWidth: 2),
                                 )
-                              : const Text('Save'),
+                              : const Text(
+                                  'Save Task',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                         );
                       },
                     ),

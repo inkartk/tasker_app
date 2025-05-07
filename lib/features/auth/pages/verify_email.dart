@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_the_best_project/features/auth/pages/navigation_tabbar.dart';
 import 'package:my_the_best_project/features/auth/widgets/snackbar.dart';
-import 'package:my_the_best_project/features/home/pages/navigation_tabbar.dart';
 
 class VerifyEmail extends StatefulWidget {
   const VerifyEmail({super.key});

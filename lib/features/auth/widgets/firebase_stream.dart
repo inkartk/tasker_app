@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_the_best_project/features/auth/pages/login_page.dart';
+import 'package:my_the_best_project/features/auth/pages/navigation_tabbar.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
-import 'package:my_the_best_project/features/home/pages/navigation_tabbar.dart';
 
 class FirebaseStream extends StatelessWidget {
   const FirebaseStream({super.key});
@@ -27,7 +27,7 @@ class FirebaseStream extends StatelessWidget {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           context.read<DailyTaskBloc>().add(
-                LoadDailyTaskEvent(day: DateTime.now()),
+                LoadDailyTaskEvent(userID: user.uid, day: DateTime.now()),
               );
         });
 

@@ -31,9 +31,10 @@ class EditDailyTaskEvent extends DailyTaskEvent {
 }
 
 class LoadDailyTaskEvent extends DailyTaskEvent {
+  final String userID;
   final DateTime day;
 
-  LoadDailyTaskEvent({required this.day});
+  LoadDailyTaskEvent({required this.userID, required this.day});
   @override
-  List<Object?> get props => [day];
+  List<Object?> get props => [userID, day];
 }

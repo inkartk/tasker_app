@@ -6,7 +6,7 @@ class GetDailyTask {
 
   GetDailyTask({required this.dailyTaskRepository});
 
-  Future<List<DailyTask>> call(DateTime day) async {
-    return await dailyTaskRepository.getDailyTask(day);
+  Future<List<DailyTask>> call(String userID, DateTime day) async {
+    return await dailyTaskRepository.getDailyTask(userID, day);
   }
 }

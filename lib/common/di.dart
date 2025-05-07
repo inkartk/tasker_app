@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 // DailyTask feature imports (new)
 import 'package:my_the_best_project/features/daily_task/data/local_data_source/daily_app_database.dart';
@@ -11,6 +14,9 @@ import 'package:my_the_best_project/features/daily_task/domain/usecases/edit_dai
 import 'package:my_the_best_project/features/daily_task/domain/usecases/get_daily_task.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/dashboard/presentation/bloc/detail_priority_bloc.dart';
+import 'package:my_the_best_project/features/profile/bloc/cubit_profile.dart';
+import 'package:my_the_best_project/features/profile/data/profile_repo_impl.dart';
+import 'package:my_the_best_project/features/profile/data/profile_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -45,5 +51,17 @@ Future<void> init() async {
       initialTask: initialTask,
       repository: sl<DailyTaskRepository>(),
     ),
+  );
+
+  sl.registerLazySingleton<ProfileRepository>(
+    () => FirebaseProfileRepository(
+      auth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
+      storage: FirebaseStorage.instance,
+    ),
+  );
+
+  sl.registerFactory<ProfileCubit>(
+    () => ProfileCubit(sl<ProfileRepository>()),
   );
 }

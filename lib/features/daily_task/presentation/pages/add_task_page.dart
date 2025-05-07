@@ -68,8 +68,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style:
-                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF105CDB),
+              )),
           const SizedBox(height: 8),
           GestureDetector(
             onTap: onTap,
@@ -82,8 +85,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.calendar_today,
-                      size: 20, color: Colors.blueAccent),
+                  const Icon(
+                    Icons.calendar_today,
+                    size: 20,
+                    color: Color(0xFF105CDB),
+                  ),
                   const SizedBox(width: 8),
                   Text(DateFormat('MMM d, yyyy').format(date),
                       style: const TextStyle(fontSize: 14)),
@@ -115,14 +121,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
       child: Container(
         height: 48,
         decoration: BoxDecoration(
-          color: isSel ? Colors.blueAccent : Colors.transparent,
+          color: isSel ? const Color(0xFF105CDB) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.blueAccent),
+          border: Border.all(
+            color: const Color(0xFF105CDB),
+          ),
         ),
         alignment: Alignment.center,
         child: Text(text,
             style: TextStyle(
-              color: isSel ? Colors.white : Colors.blueAccent,
+              color: isSel ? Colors.white : const Color(0xFF105CDB),
               fontWeight: FontWeight.w500,
             )),
       ),
@@ -175,14 +183,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: const Color(0xFF105CDB),
       appBar: AppBar(
         title: const Text('Add Task',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.blueAccent,
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Colors.white)),
+        backgroundColor: const Color(0xFF105CDB),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => context.go('/calendar_page'),
+          onPressed: () => context.go('/main?tab=1'),
         ),
       ),
       body: SafeArea(
@@ -208,16 +219,35 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           'Ends', _endDate, () => _pickDate(context, false)),
                     ]),
                     const SizedBox(height: 24),
+                    const Text('Title',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF105CDB),
+                        )),
                     TextField(
                       controller: _titleController,
-                      decoration: _inputDecoration('Title'),
+                      decoration: _inputDecoration(''),
                     ),
                     const SizedBox(height: 24),
+                    const Text('Category',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF105CDB),
+                        )),
+                    const SizedBox(height: 6),
                     _buildCategoryToggle(),
                     const SizedBox(height: 24),
+                    const Text('Description',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF105CDB),
+                        )),
                     TextField(
                       controller: _descController,
-                      decoration: _inputDecoration('Description'),
+                      decoration: _inputDecoration(''),
                       maxLines: 5,
                     ),
                     const SizedBox(height: 24),
@@ -226,7 +256,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     if (_selectedCategory == 0) ...[
                       const Text('To do list',
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF105CDB),
+                          )),
                       const SizedBox(height: 12),
                       ..._subControllers.asMap().entries.map((entry) {
                         final i = entry.key;
@@ -238,7 +271,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               child: TextField(
                                 controller: ctrl,
                                 decoration: InputDecoration(
-                                  hintText: 'Sub-task ${i + 1}',
                                   filled: true,
                                   fillColor: Colors.grey.shade100,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -262,12 +294,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           ]),
                         );
                       }),
-                      TextButton.icon(
+                      IconButton(
+                        alignment: Alignment.topRight,
                         onPressed: () => setState(() {
                           _subControllers.add(TextEditingController());
                         }),
-                        icon: const Icon(Icons.add_circle_outline),
-                        label: const Text('Add sub-task'),
+                        icon: const Icon(
+                          Icons.add_circle_outline,
+                          color: Color(0xFF105CDB),
+                        ),
                       ),
                       const SizedBox(height: 24),
                     ],
@@ -275,7 +310,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     BlocConsumer<DailyTaskBloc, DailyTaskState>(
                       listener: (ctx, state) {
                         if (state is DailyTaskLoaded) {
-                          context.go('/calendar_page');
+                          context.go('/main?tab=1');
                         }
                         if (state is DailyTaskErrorState) {
                           ScaffoldMessenger.of(ctx).showSnackBar(
@@ -288,6 +323,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         return ElevatedButton(
                           onPressed: loading ? null : _onCreatePressed,
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF105CDB),
                             minimumSize: const Size.fromHeight(48),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -299,7 +335,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   child:
                                       CircularProgressIndicator(strokeWidth: 2),
                                 )
-                              : const Text('Create Task'),
+                              : const Text(
+                                  'Create Task',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                         );
                       },
                     ),

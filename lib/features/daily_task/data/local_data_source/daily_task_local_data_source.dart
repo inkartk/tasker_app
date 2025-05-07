@@ -9,7 +9,7 @@ abstract class DailyTaskLocalDataSource {
   Future<DailyTask> addDailyTask(DailyTask dailyTask);
   Future<void> deleteDailyTask(DailyTask dailyTask);
   Future<void> editDailyTask(DailyTask dailyTask);
-  Future<List<DailyTask>> getDailyTask(DateTime day);
+  Future<List<DailyTask>> getDailyTask(String userId, DateTime day);
 }
 
 class DailyTaskLocalDataSourceImpl implements DailyTaskLocalDataSource {
@@ -26,7 +26,6 @@ class DailyTaskLocalDataSourceImpl implements DailyTaskLocalDataSource {
       endTime: Value(task.endTime),
       category: Value(task.category),
       isDone: Value(task.isDone),
-      // Передаём сам список, а не JSON-строку:
       subTasksJson: Value(task.subTasks),
     );
     final newId = await db.addDailyTask(companion);
@@ -45,29 +44,27 @@ class DailyTaskLocalDataSourceImpl implements DailyTaskLocalDataSource {
       endTime: task.endTime,
       category: task.category,
       isDone: task.isDone,
-      // Передаём список подзадач:
       subTasksJson: task.subTasks,
     );
     return db.updateDailyTask(entity);
   }
 
   @override
-  Future<List<DailyTask>> getDailyTask(DateTime day) async {
-    final entities = await db.getTasksForDay(day);
-    return entities.map((e) {
-      return DailyTask(
-        id: e.id,
-        userID: e.userId,
-        title: e.title,
-        description: e.description,
-        startTime: e.startTime,
-        endTime: e.endTime,
-        category: e.category,
-        isDone: e.isDone,
-        // Drift вернёт вам готовый List<SubTask>:
-        subTasks: e.subTasksJson,
-      );
-    }).toList();
+  Future<List<DailyTask>> getDailyTask(String userId, DateTime day) async {
+    final entities = await db.getTasksForDayForUser(userId, day);
+    return entities
+        .map((e) => DailyTask(
+              id: e.id,
+              userID: e.userId,
+              title: e.title,
+              description: e.description,
+              startTime: e.startTime,
+              endTime: e.endTime,
+              category: e.category,
+              isDone: e.isDone,
+              subTasks: e.subTasksJson,
+            ))
+        .toList();
   }
 
   @override

@@ -46,7 +46,7 @@ class DailyTaskDetailPage extends StatelessWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: () => context.go('/main'),
+                    onTap: () => context.go('/main?tab=0'),
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
                       width: 36,
@@ -115,7 +115,7 @@ class DailyTaskDetailPage extends StatelessWidget {
                           context
                               .read<DailyTaskBloc>()
                               .add(EditDailyTaskEvent(dailyTask: updated));
-                          context.go('/main');
+                          context.go('/main?tab=0');
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _primaryColor,

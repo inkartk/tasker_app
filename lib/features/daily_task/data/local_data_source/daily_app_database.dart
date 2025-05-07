@@ -59,11 +59,14 @@ class DailyAppDatabase extends _$DailyAppDatabase {
         },
       );
 
-  Future<List<DailyTaskEntity>> getTasksForDay(DateTime day) {
+  Future<List<DailyTaskEntity>> getTasksForDayForUser(
+      String userId, DateTime day) {
     final start = DateTime(day.year, day.month, day.day);
     final end = start.add(const Duration(days: 1));
     return (select(dailyTasks)
-          ..where((t) => t.startTime.isBetweenValues(start, end)))
+          ..where((t) =>
+              t.userId.equals(userId) &
+              t.startTime.isBetweenValues(start, end)))
         .get();
   }
 

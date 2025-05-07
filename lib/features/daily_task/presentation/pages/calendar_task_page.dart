@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,12 +16,15 @@ class CalendarTaskPage extends StatefulWidget {
 
 class _CalendarTaskPageState extends State<CalendarTaskPage> {
   DateTime _selectedDate = DateTime.now();
+  final uid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<DailyTaskBloc>().add(LoadDailyTaskEvent(day: _selectedDate));
+      context
+          .read<DailyTaskBloc>()
+          .add(LoadDailyTaskEvent(userID: uid, day: _selectedDate));
     });
   }
 
@@ -34,11 +38,20 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
           centerTitle: false,
           backgroundColor: Colors.white,
           elevation: 0,
-          leading: const Icon(Icons.calendar_today, color: Color(0xFF105CDB)),
-          title: Text(
-            DateFormat('MMM, yyyy').format(_selectedDate),
-            style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+          title: Row(
+            children: [
+              const Icon(Icons.calendar_today, color: Color(0xFF105CDB)),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                DateFormat('MMM, yyyy').format(_selectedDate),
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+            ],
           ),
           actions: [
             Padding(
@@ -72,7 +85,7 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
                 setState(() => _selectedDate = date);
                 context
                     .read<DailyTaskBloc>()
-                    .add(LoadDailyTaskEvent(day: date));
+                    .add(LoadDailyTaskEvent(userID: uid, day: date));
               },
             ),
             const SizedBox(height: 16),
@@ -141,12 +154,17 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
                                         child: Text(
                                           t.title,
                                           style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF105CDB),
+                                          ),
                                         ),
                                       ),
                                       IconButton(
-                                        icon: const Icon(Icons.more_horiz),
+                                        icon: const Icon(
+                                          Icons.more_horiz,
+                                          color: Color(0xFFABCEF5),
+                                        ),
                                         onPressed: () {
                                           context.go('/edit_task', extra: t);
                                         },
@@ -158,35 +176,21 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
                                     t.description,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
-                                    style:
-                                        const TextStyle(color: Colors.black54),
+                                    style: const TextStyle(color: Colors.black),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(
-                                    '${DateFormat('MMM d').format(t.startTime)} - ${DateFormat('MMM d').format(t.endTime)}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF105CDB),
-                                    ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '${DateFormat('MMM, d').format(t.startTime)} - ${DateFormat('MMM d').format(t.endTime)}',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF105CDB),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-
-                                  // ==== показываем подзадачи ====
-                                  if (t.subTasks.isNotEmpty) ...[
-                                    const SizedBox(height: 12),
-                                    const Text('Sub-tasks:',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600)),
-                                    const SizedBox(height: 6),
-                                    ...t.subTasks.map((s) => Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 2),
-                                          child: Text(
-                                            '• $s',
-                                            style: const TextStyle(
-                                                color: Colors.black87),
-                                          ),
-                                        )),
-                                  ],
                                 ],
                               ),
                             );

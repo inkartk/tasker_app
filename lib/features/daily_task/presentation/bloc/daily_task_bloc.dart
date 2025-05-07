@@ -21,7 +21,8 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
     on<AddDailyTaskEvent>((event, emit) async {
       try {
         await addDailyTask(event.dailyTask);
-        final tasks = await getDailyTask(event.dailyTask.startTime);
+        final tasks = await getDailyTask(
+            event.dailyTask.userID, event.dailyTask.startTime);
 
         final filteredTasks = tasks
             .where((task) =>
@@ -43,7 +44,8 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
     on<DeleteDailyTaskEvent>((event, emit) async {
       try {
         await deleteDailyTask(event.dailyTask);
-        final tasks = await getDailyTask(event.dailyTask.startTime);
+        final tasks = await getDailyTask(
+            event.dailyTask.userID, event.dailyTask.startTime);
 
         final filteredTasks = tasks
             .where((task) =>
@@ -64,7 +66,8 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
     on<EditDailyTaskEvent>((event, emit) async {
       try {
         await editDailyTask(event.dailyTask);
-        final tasks = await getDailyTask(event.dailyTask.startTime);
+        final tasks = await getDailyTask(
+            event.dailyTask.userID, event.dailyTask.startTime);
 
         final filteredTasks = tasks
             .where((task) =>
@@ -85,7 +88,7 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
     on<LoadDailyTaskEvent>((event, emit) async {
       emit(DailyTaskLoading());
       try {
-        final tasks = await getDailyTask(event.day);
+        final tasks = await getDailyTask(event.userID, event.day);
 
         final filteredTasks = tasks
             .where((task) =>

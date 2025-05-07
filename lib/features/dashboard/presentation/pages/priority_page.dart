@@ -112,7 +112,7 @@ class _PriorityView extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: () => GoRouter.of(context).go('/main'),
+          onTap: () => context.go('/main?tab=0'),
           borderRadius: _cardRadius,
           child: Container(
             padding: const EdgeInsets.all(6),

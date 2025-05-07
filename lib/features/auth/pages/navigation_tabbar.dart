@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/pages/calendar_task_page.dart';
 import 'package:my_the_best_project/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:my_the_best_project/features/home/pages/account_page.dart';
+import 'package:my_the_best_project/features/profile/pages/account_page.dart';
 
 class NavigationTabBar extends StatefulWidget {
-  const NavigationTabBar({super.key});
+  final int initialIndex;
+
+  const NavigationTabBar({super.key, this.initialIndex = 2});
 
   @override
   State<NavigationTabBar> createState() => _NavigationTabBarState();
 }
 
 class _NavigationTabBarState extends State<NavigationTabBar> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
-  final List<Widget> _pages = [
-    const DashboardPage(),
-    const CalendarTaskPage(),
-    const AccountPage(),
+  final List<Widget> _pages = const [
+    DashboardPage(),
+    CalendarTaskPage(),
+    AccountPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);

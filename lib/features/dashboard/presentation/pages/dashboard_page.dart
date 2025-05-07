@@ -18,11 +18,14 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final DateTime _startDate = DateTime.now();
+  final uid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
-    context.read<DailyTaskBloc>().add(LoadDailyTaskEvent(day: _startDate));
+    context
+        .read<DailyTaskBloc>()
+        .add(LoadDailyTaskEvent(userID: uid, day: _startDate));
   }
 
   @override
@@ -200,7 +203,7 @@ class PriorityTaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 180,
+      width: 130,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: gradientColors),
