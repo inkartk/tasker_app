@@ -30,6 +30,13 @@ class EditDailyTaskEvent extends DailyTaskEvent {
   List<Object?> get props => [dailyTask];
 }
 
+class LoadStatistics extends DailyTaskEvent {
+  final int year;
+  LoadStatistics(this.year);
+  @override
+  List<Object?> get props => [year];
+}
+
 class LoadDailyTaskEvent extends DailyTaskEvent {
   final String userID;
   final DateTime day;

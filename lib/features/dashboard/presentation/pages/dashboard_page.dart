@@ -120,10 +120,27 @@ class _DashboardPageState extends State<DashboardPage> {
                             t.subTasks.where((sub) => sub.isDone).length;
                         final progress = totalTasks > 0
                             ? (doneTasks / totalTasks).clamp(0.0, 1.0)
-                            : 1.0;
-                        final daysLeft = t.endTime.isAfter(_startDate)
-                            ? '${t.endTime.difference(_startDate).inDays} days'
-                            : '0 days';
+                            : t.isDone
+                                ? 1.0
+                                : 0.0;
+
+                        final now = DateTime.now();
+
+                        final inclusiveEndOfDay = DateTime(
+                          t.endTime.year,
+                          t.endTime.month,
+                          t.endTime.day,
+                          23,
+                          59,
+                          59,
+                          999,
+                        );
+
+                        final diff = inclusiveEndOfDay.difference(now);
+
+                        final daysLeft =
+                            diff.isNegative ? '1 days' : '${diff.inDays} days';
+
                         final gradients = [
                           [const Color(0xFF3A8DFF), const Color(0xFF0077FF)],
                           [const Color(0xFF4E0080), const Color(0xFF2E003F)],
@@ -203,7 +220,7 @@ class PriorityTaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 130,
+      width: 150,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: gradientColors),
@@ -211,7 +228,6 @@ class PriorityTaskCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Верхняя строка: индикатор + дни
           Row(
             children: [
               Container(
@@ -240,7 +256,6 @@ class PriorityTaskCard extends StatelessWidget {
             ],
           ),
 
-          // Иконка и название
           Expanded(
             child: Center(
               child: Column(
@@ -312,10 +327,10 @@ class DailyTaskTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: isDone ? const Color(0xFFE7EEFB) : Colors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isDone ? const Color(0xFF105CDB) : Colors.grey.shade300,
+          color: Colors.grey.shade300,
           width: 1.5,
         ),
       ),
@@ -327,7 +342,7 @@ class DailyTaskTile extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: isDone ? const Color(0xFF105CDB) : Colors.black87,
+                color: isDone ? const Color(0xFF006EE9) : Colors.black87,
               ),
             ),
           ),
@@ -336,9 +351,9 @@ class DailyTaskTile extends StatelessWidget {
             height: 24,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDone ? const Color(0xFF105CDB) : Colors.transparent,
+              color: isDone ? const Color(0xFF006EE9) : Colors.transparent,
               border: Border.all(
-                color: const Color(0xFF105CDB),
+                color: const Color(0xFF006EE9),
                 width: 2,
               ),
             ),

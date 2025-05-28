@@ -85,7 +85,7 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
                 setState(() => _selectedDate = date);
                 context
                     .read<DailyTaskBloc>()
-                    .add(LoadDailyTaskEvent(userID: uid, day: date));
+                    .add(LoadDailyTaskEvent(userID: uid, day: _selectedDate));
               },
             ),
             const SizedBox(height: 16),

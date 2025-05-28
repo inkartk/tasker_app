@@ -1,8 +1,8 @@
 // lib/features/daily_task/data/local_data_source/daily_task_local_data_source.dart
 
 import 'package:drift/drift.dart';
+import 'package:my_the_best_project/features/daily_task/domain/entity/daily_task.dart';
 
-import '../../domain/entity/daily_task.dart';
 import 'daily_app_database.dart';
 
 abstract class DailyTaskLocalDataSource {

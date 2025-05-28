@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,19 +9,48 @@ import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
 import 'package:my_the_best_project/features/dashboard/presentation/widgets/detail_widgets.dart';
 
-const _primaryColor = Color(0xFF105CDB);
+const _primaryColor = Color(0xFF006EE9);
 
-class DailyTaskDetailPage extends StatelessWidget {
+class DailyTaskDetailPage extends StatefulWidget {
   final DailyTask task;
   const DailyTaskDetailPage({super.key, required this.task});
 
   @override
-  Widget build(BuildContext context) {
-    // Calculate remaining time
+  State<DailyTaskDetailPage> createState() => _DailyTaskDetailPageState();
+}
+
+class _DailyTaskDetailPageState extends State<DailyTaskDetailPage> {
+  late Timer _timer;
+
+  Duration _remaining = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateRemaining();
+    _timer =
+        Timer.periodic(const Duration(seconds: 1), (_) => _updateRemaining());
+  }
+
+  void _updateRemaining() {
     final now = DateTime.now();
-    final remaining = task.endTime.difference(now);
-    final hours = remaining.inHours.clamp(0, 999);
-    final minutes = (remaining.inMinutes % 60).clamp(0, 59);
+    final endOfDay = DateTime(now.year, now.month, now.day, 23, 59);
+    final diff = endOfDay.difference(now);
+    setState(() {
+      _remaining = diff.isNegative ? Duration.zero : diff;
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hours = _remaining.inHours;
+    final minutes = _remaining.inMinutes.remainder(60);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -29,7 +60,6 @@ class DailyTaskDetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header: icon, title, close
               Row(
                 children: [
                   const Icon(Icons.fitness_center,
@@ -37,7 +67,7 @@ class DailyTaskDetailPage extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      task.title,
+                      widget.task.title,
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -68,11 +98,13 @@ class DailyTaskDetailPage extends StatelessWidget {
                 children: [
                   DateColumn(
                       label: 'start',
-                      value: DateFormat('d MMM yyyy').format(task.startTime)),
+                      value: DateFormat('d MMM yyyy')
+                          .format(widget.task.startTime)),
                   const Spacer(),
                   DateColumn(
                       label: 'end',
-                      value: DateFormat('d MMM yyyy').format(task.endTime)),
+                      value:
+                          DateFormat('d MMM yyyy').format(widget.task.endTime)),
                 ],
               ),
 
@@ -80,6 +112,7 @@ class DailyTaskDetailPage extends StatelessWidget {
 
               // Countdown
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TimeBox(value: '$hours', label: 'hours'),
                   const SizedBox(width: 16),
@@ -96,7 +129,7 @@ class DailyTaskDetailPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                task.description,
+                widget.task.description,
                 style: const TextStyle(
                     fontSize: 14, color: Colors.black87, height: 1.4),
               ),
@@ -107,11 +140,11 @@ class DailyTaskDetailPage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: task.isDone
+                  onPressed: widget.task.isDone
                       ? null
                       : () {
                           // mark as done
-                          final updated = task.copyWith(isDone: true);
+                          final updated = widget.task.copyWith(isDone: true);
                           context
                               .read<DailyTaskBloc>()
                               .add(EditDailyTaskEvent(dailyTask: updated));
@@ -125,7 +158,7 @@ class DailyTaskDetailPage extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    task.isDone ? 'Finished' : 'Finish',
+                    widget.task.isDone ? 'Finished' : 'Finish',
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

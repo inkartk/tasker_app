@@ -19,8 +19,8 @@ class AddTaskPage extends StatefulWidget {
 
 class _AddTaskPageState extends State<AddTaskPage> {
   DateTime _startDate = DateTime.now();
-  DateTime _endDate = DateTime.now().add(const Duration(days: 7));
-  int _selectedCategory = 0; // 0 = Priority, 1 = Daily
+  DateTime _endDate = DateTime.now().add(const Duration(days: 0));
+  int _selectedCategory = 0;
 
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
@@ -29,7 +29,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   void initState() {
     super.initState();
-    // стартовый контроллер для первой подзачи
     _subControllers.add(TextEditingController());
   }
 
@@ -71,7 +70,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF105CDB),
+                color: Color(0xFF006EE9),
               )),
           const SizedBox(height: 8),
           GestureDetector(
@@ -88,7 +87,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   const Icon(
                     Icons.calendar_today,
                     size: 20,
-                    color: Color(0xFF105CDB),
+                    color: Color(0xFF006EE9),
                   ),
                   const SizedBox(width: 8),
                   Text(DateFormat('MMM d, yyyy').format(date),
@@ -121,16 +120,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
       child: Container(
         height: 48,
         decoration: BoxDecoration(
-          color: isSel ? const Color(0xFF105CDB) : Colors.transparent,
+          color: isSel ? const Color(0xFF006EE9) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFF105CDB),
+            color: const Color(0xFF006EE9),
           ),
         ),
         alignment: Alignment.center,
         child: Text(text,
             style: TextStyle(
-              color: isSel ? Colors.white : const Color(0xFF105CDB),
+              color: isSel ? Colors.white : const Color(0xFF006EE9),
               fontWeight: FontWeight.w500,
             )),
       ),
@@ -183,14 +182,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF105CDB),
+      backgroundColor: const Color(0xFF006EE9),
       appBar: AppBar(
         title: const Text('Add Task',
             style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
                 color: Colors.white)),
-        backgroundColor: const Color(0xFF105CDB),
+        backgroundColor: const Color(0xFF006EE9),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => context.go('/main?tab=1'),
@@ -199,6 +198,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
       body: SafeArea(
         bottom: false,
         child: Column(children: [
+          const SizedBox(
+            height: 20,
+          ),
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
@@ -223,7 +225,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF105CDB),
+                          color: Color(0xFF006EE9),
                         )),
                     TextField(
                       controller: _titleController,
@@ -234,7 +236,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF105CDB),
+                          color: Color(0xFF006EE9),
                         )),
                     const SizedBox(height: 6),
                     _buildCategoryToggle(),
@@ -243,7 +245,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF105CDB),
+                          color: Color(0xFF006EE9),
                         )),
                     TextField(
                       controller: _descController,
@@ -258,7 +260,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF105CDB),
+                            color: Color(0xFF006EE9),
                           )),
                       const SizedBox(height: 12),
                       ..._subControllers.asMap().entries.map((entry) {
@@ -301,7 +303,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         }),
                         icon: const Icon(
                           Icons.add_circle_outline,
-                          color: Color(0xFF105CDB),
+                          color: Color(0xFF006EE9),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -323,7 +325,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         return ElevatedButton(
                           onPressed: loading ? null : _onCreatePressed,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF105CDB),
+                            backgroundColor: const Color(0xFF006EE9),
                             minimumSize: const Size.fromHeight(48),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),

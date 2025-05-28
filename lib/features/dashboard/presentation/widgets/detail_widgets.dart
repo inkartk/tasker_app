@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const _primaryColor = Color(0xFF105CDB);
+const _primaryColor = Color(0xFF006EE9);
 
 class DateColumn extends StatelessWidget {
   final String label;

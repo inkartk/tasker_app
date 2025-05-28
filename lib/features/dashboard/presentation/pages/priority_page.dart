@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:my_the_best_project/common/di.dart';
+import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
+import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
 import 'package:my_the_best_project/features/dashboard/presentation/bloc/detail_priority_bloc.dart';
 
 import '../../../daily_task/domain/entity/daily_task.dart';
@@ -27,12 +29,13 @@ class PriorityPage extends StatelessWidget {
 class _PriorityView extends StatelessWidget {
   _PriorityView({super.key});
 
-  static const _primaryColor = Color(0xFF3366FF);
-  static const _backgroundColor = Color(0xFFF2F4F7);
+  static const _primaryColor = Color(0xFF006EE9);
+  static const _backgroundColor = Colors.white;
   static const _cardRadius = BorderRadius.all(Radius.circular(16));
   final DateFormat _dateFormat = DateFormat('d MMM yyyy');
 
   String _formatDate(DateTime d) => _dateFormat.format(d);
+  final DateTime _startDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,6 @@ class _PriorityView extends StatelessWidget {
         backgroundColor: _backgroundColor,
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -59,39 +61,90 @@ class _PriorityView extends StatelessWidget {
                   BlocBuilder<DetailPriorityTaskCubit, DetailPriorityTaskState>(
                 builder: (context, state) {
                   final t = state.task;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Заголовок + кнопка закрыть
-                      _buildHeader(context, theme, t.title),
+                  final now = DateTime.now();
 
-                      const SizedBox(height: 24),
-                      // Даты
-                      _buildDateRow(theme, t.startTime, t.endTime),
-
-                      const SizedBox(height: 24),
-                      // Тайм-карточки
-                      _buildTimeCards(state.months, state.days, state.hours),
-
-                      const SizedBox(height: 24),
-                      // Описание
-                      _buildSectionTitle('Description', theme),
-                      const SizedBox(height: 8),
-                      Text(t.description, style: theme.textTheme.bodyMedium),
-
-                      const SizedBox(height: 24),
-                      // Прогресс
-                      _buildSectionTitle('Progress', theme),
-                      const SizedBox(height: 8),
-                      _buildProgressBar(state.progress),
-
-                      const SizedBox(height: 24),
-                      // Список подзадач
-                      _buildSectionTitle('To do List', theme),
-                      const SizedBox(height: 8),
-                      _buildSubTasksList(context, t.subTasks),
-                    ],
+                  final inclusiveEndOfDay = DateTime(
+                    t.endTime.year,
+                    t.endTime.month,
+                    t.endTime.day,
+                    23,
+                    59,
+                    59,
+                    999,
                   );
+
+                  final diff = inclusiveEndOfDay.difference(now);
+
+                  final daysLeft = diff.isNegative ? 0 : diff.inDays;
+
+                  final hoursLeft =
+                      diff.isNegative ? 0 : diff.inHours - daysLeft * 24;
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Заголовок + кнопка закрыть
+                        _buildHeader(context, theme, t.title),
+
+                        const SizedBox(height: 24),
+                        // Даты
+                        _buildDateRow(theme, t.startTime, t.endTime),
+
+                        const SizedBox(height: 24),
+                        // Тайм-карточки
+                        _buildTimeCards(daysLeft, hoursLeft),
+
+                        const SizedBox(height: 24),
+                        // Описание
+                        _buildSectionTitle('Description', theme),
+                        const SizedBox(height: 8),
+                        Text(t.description, style: theme.textTheme.bodyMedium),
+                        const SizedBox(height: 24),
+
+                        if (t.subTasks.isNotEmpty) ...[
+                          // Прогресс
+                          _buildSectionTitle('Progress', theme),
+                          const SizedBox(height: 8),
+                          _buildProgressBar(state.progress),
+
+                          const SizedBox(height: 24),
+                          // Список подзадач
+                          _buildSectionTitle('To do List', theme),
+                          const SizedBox(height: 8),
+                          _buildSubTasksList(context, t.subTasks),
+                        ],
+                        if (t.subTasks.isEmpty) ...[
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: t.isDone
+                                  ? null
+                                  : () {
+                                      // mark as done
+                                      final updated = t.copyWith(isDone: true);
+                                      context.read<DailyTaskBloc>().add(
+                                          EditDailyTaskEvent(
+                                              dailyTask: updated));
+                                      context.go('/main?tab=0');
+                                    },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: _primaryColor,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Text(
+                                t.isDone ? 'Finished' : 'Finish',
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ]);
                 },
               ),
             ),
@@ -113,14 +166,18 @@ class _PriorityView extends StatelessWidget {
         ),
         InkWell(
           onTap: () => context.go('/main?tab=0'),
-          borderRadius: _cardRadius,
+          borderRadius: BorderRadius.circular(12),
           child: Container(
-            padding: const EdgeInsets.all(6),
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
-              border: Border.all(color: _primaryColor),
-              borderRadius: _cardRadius,
+              color: _primaryColor,
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.close, size: 20, color: _primaryColor),
+            child: const Icon(
+              Icons.close,
+              color: Colors.white,
+            ),
           ),
         ),
       ],
@@ -146,11 +203,10 @@ class _PriorityView extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeCards(int months, int days, int hours) {
+  Widget _buildTimeCards(int days, int hours) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _TimeCard(value: months.toString(), label: 'months'),
-        const SizedBox(width: 12),
         _TimeCard(value: days.toString(), label: 'days'),
         const SizedBox(width: 12),
         _TimeCard(value: hours.toString(), label: 'hours'),
@@ -192,9 +248,7 @@ class _PriorityView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                  color: sub.isDone ? _primaryColor : Colors.grey.shade200,
-                  width: 1.5),
+              border: Border.all(color: Colors.grey.shade200, width: 2),
               borderRadius: _cardRadius,
             ),
             child: Row(
@@ -204,18 +258,28 @@ class _PriorityView extends StatelessWidget {
                     sub.title,
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight:
-                          sub.isDone ? FontWeight.w500 : FontWeight.w600,
-                      color: sub.isDone ? _primaryColor : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                      color:
+                          sub.isDone ? const Color(0xFF006EE9) : Colors.black87,
                     ),
                   ),
                 ),
-                Icon(
-                  sub.isDone
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  color: sub.isDone ? _primaryColor : Colors.grey.shade400,
-                  size: 20,
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: sub.isDone
+                        ? const Color(0xFF006EE9)
+                        : Colors.transparent,
+                    border: Border.all(
+                      color: const Color(0xFF006EE9),
+                      width: 2,
+                    ),
+                  ),
+                  child: sub.isDone
+                      ? const Icon(Icons.check, size: 16, color: Colors.white)
+                      : null,
                 ),
               ],
             ),
@@ -268,26 +332,25 @@ class _TimeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: const Color(0xFF105CDB),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(value,
-                style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white)),
-            const SizedBox(height: 4),
-            Text(label,
-                style: const TextStyle(fontSize: 14, color: Colors.white70)),
-          ],
-        ),
+    return Container(
+      width: 94,
+      height: 94,
+      decoration: BoxDecoration(
+        color: const Color(0xFF006EE9),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(value,
+              style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white)),
+          const SizedBox(height: 4),
+          Text(label,
+              style: const TextStyle(fontSize: 14, color: Colors.white70)),
+        ],
       ),
     );
   }

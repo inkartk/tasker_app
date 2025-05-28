@@ -31,6 +31,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final List<TextEditingController> _subControllers = [];
+  final List<bool> _subDone = [];
 
   @override
   void initState() {
@@ -46,12 +47,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
     if (t.subTasks.isNotEmpty) {
       for (var sub in t.subTasks) {
-        _subControllers.add(
-          TextEditingController(text: sub.title),
-        );
+        _subControllers.add(TextEditingController(text: sub.title));
+        _subDone.add(sub.isDone); // вот сюда подтягиваем исходный isDone
       }
     } else {
       _subControllers.add(TextEditingController());
+      _subDone.add(false); // для новой строки — false
     }
   }
 
@@ -180,11 +181,33 @@ class _EditTaskPageState extends State<EditTaskPage> {
       return;
     }
 
-    final subs = _subControllers
-        .map((c) => c.text.trim())
-        .where((s) => s.isNotEmpty)
-        .map((title) => SubTask(title: title))
-        .toList();
+    final subs = <SubTask>[];
+    for (var i = 0; i < _subControllers.length; i++) {
+      final text = _subControllers[i].text.trim();
+      if (text.isEmpty) continue;
+
+      // <<< ЗДЕСЬ БЫЛА ОШИБКА >>>
+      final doneFlag = _subDone[i];
+
+      if (i < widget.task.subTasks.length) {
+        // существующая подтаска: сохраняем её id и новый isDone
+        final original = widget.task.subTasks[i];
+        subs.add(
+          original.copyWith(
+            title: text,
+            isDone: doneFlag,
+          ),
+        );
+      } else {
+        // новая подтаска: id остаётся null
+        subs.add(
+          SubTask(
+            title: text,
+            isDone: doneFlag,
+          ),
+        );
+      }
+    }
 
     final updated = widget.task.copyWith(
       title: _titleController.text.trim(),
@@ -333,6 +356,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                         alignment: Alignment.topRight,
                         onPressed: () => setState(() {
                           _subControllers.add(TextEditingController());
+                          _subDone.add(false);
                         }),
                         icon: const Icon(
                           Icons.add_circle_outline,

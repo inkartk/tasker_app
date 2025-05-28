@@ -21,21 +21,10 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
     on<AddDailyTaskEvent>((event, emit) async {
       try {
         await addDailyTask(event.dailyTask);
-        final tasks = await getDailyTask(
-            event.dailyTask.userID, event.dailyTask.startTime);
-
-        final filteredTasks = tasks
-            .where((task) =>
-                task.startTime.year == event.dailyTask.startTime.year &&
-                task.startTime.month == event.dailyTask.startTime.month &&
-                task.startTime.day == event.dailyTask.startTime.day)
-            .toList();
-
-        filteredTasks.sort((a, b) {
-          if (a.isDone == b.isDone) return 0;
-          return a.isDone ? 1 : -1;
-        });
-        emit(DailyTaskLoaded(dailyTaskList: filteredTasks));
+        add(LoadDailyTaskEvent(
+          userID: event.dailyTask.userID,
+          day: event.dailyTask.startTime,
+        ));
       } catch (e) {
         emit(DailyTaskErrorState(dailyTaskError: e.toString()));
       }
@@ -44,21 +33,10 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
     on<DeleteDailyTaskEvent>((event, emit) async {
       try {
         await deleteDailyTask(event.dailyTask);
-        final tasks = await getDailyTask(
-            event.dailyTask.userID, event.dailyTask.startTime);
-
-        final filteredTasks = tasks
-            .where((task) =>
-                task.startTime.year == event.dailyTask.startTime.year &&
-                task.startTime.month == event.dailyTask.startTime.month &&
-                task.startTime.day == event.dailyTask.startTime.day)
-            .toList();
-
-        filteredTasks.sort((a, b) {
-          if (a.isDone == b.isDone) return 0;
-          return a.isDone ? 1 : -1;
-        });
-        emit(DailyTaskLoaded(dailyTaskList: filteredTasks));
+        add(LoadDailyTaskEvent(
+          userID: event.dailyTask.userID,
+          day: event.dailyTask.startTime,
+        ));
       } catch (e) {
         emit(DailyTaskErrorState(dailyTaskError: e.toString()));
       }
@@ -66,21 +44,10 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
     on<EditDailyTaskEvent>((event, emit) async {
       try {
         await editDailyTask(event.dailyTask);
-        final tasks = await getDailyTask(
-            event.dailyTask.userID, event.dailyTask.startTime);
-
-        final filteredTasks = tasks
-            .where((task) =>
-                task.startTime.year == event.dailyTask.startTime.year &&
-                task.startTime.month == event.dailyTask.startTime.month &&
-                task.startTime.day == event.dailyTask.startTime.day)
-            .toList();
-
-        filteredTasks.sort((a, b) {
-          if (a.isDone == b.isDone) return 0;
-          return a.isDone ? 1 : -1;
-        });
-        emit(DailyTaskLoaded(dailyTaskList: filteredTasks));
+        add(LoadDailyTaskEvent(
+          userID: event.dailyTask.userID,
+          day: event.dailyTask.startTime,
+        ));
       } catch (e) {
         emit(DailyTaskErrorState(dailyTaskError: e.toString()));
       }
@@ -90,17 +57,34 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
       try {
         final tasks = await getDailyTask(event.userID, event.day);
 
-        final filteredTasks = tasks
-            .where((task) =>
-                task.startTime.year == event.day.year &&
-                task.startTime.month == event.day.month &&
-                task.startTime.day == event.day.day)
-            .toList();
+        // границы дня: от 00:00 до 23:59:59.999
+        final startOfDay = DateTime(
+          event.day.year,
+          event.day.month,
+          event.day.day,
+        );
+        final endOfDay = DateTime(
+          event.day.year,
+          event.day.month,
+          event.day.day,
+          23,
+          59,
+          59,
+          999,
+        );
+
+        final filteredTasks = tasks.where((task) {
+          final startsOnOrBeforeDayEnd = !task.startTime.isAfter(endOfDay);
+          final endsOnOrAfterDayStart = !task.endTime.isBefore(startOfDay);
+
+          return startsOnOrBeforeDayEnd && endsOnOrAfterDayStart;
+        }).toList();
 
         filteredTasks.sort((a, b) {
           if (a.isDone == b.isDone) return 0;
           return a.isDone ? 1 : -1;
         });
+
         emit(DailyTaskLoaded(dailyTaskList: filteredTasks));
       } catch (e) {
         emit(DailyTaskErrorState(dailyTaskError: e.toString()));
