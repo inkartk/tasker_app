@@ -53,7 +53,8 @@ Tasker — это кроссплатформенное мобильное при
 git clone https://github.com/inkartk/tasker_app.git  
 cd tasker_app  
 flutter pub get  
-flutter run  
+flutter run
+```
 
 ---
 
