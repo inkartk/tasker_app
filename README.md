@@ -76,22 +76,22 @@ flutter run
 ## 📸 Скриншоты
 
 ### 🏠 Главный экран (Dashboard)
-![Dashboard](assets/screenshots/dashboard.png)
+<img src="assets/screenshots/dashboard.png" width="300"/>
 
 ### ➕ Добавление задачи
-![Add Task](assets/screenshots/add_task.png)
+<img src="assets/screenshots/add_task.png" width="300"/>
 
 ### ✅ Список задач
-![Task](assets/screenshots/task.png)
+<img src="assets/screenshots/task.png" width="300"/>
 
 ### 📋 Детали задачи
-![Task Detail](assets/screenshots/task_detail.png)
+<img src="assets/screenshots/task_detail.png" width="300"/>
 
 ### 🔐 Вход
-![Login](assets/screenshots/login.png)
-
-### 👤 Профиль
-![Profile](assets/screenshots/profile.png)
+<img src="assets/screenshots/login.png" width="300"/>
 
 ### 📝 Регистрация
-![Register](assets/screenshots/register.png)
+<img src="assets/screenshots/register.png" width="300"/>
+
+### 👤 Профиль
+<img src="assets/screenshots/profile.png" width="300"/>
