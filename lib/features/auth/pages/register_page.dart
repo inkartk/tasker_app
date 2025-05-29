@@ -1,175 +1,213 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_the_best_project/features/auth/widgets/snackbar.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
-
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  bool isHiddenPassword = true;
-  TextEditingController nameTextInputController = TextEditingController();
-  TextEditingController phoneTextInputController = TextEditingController();
-  TextEditingController emailTextInputController = TextEditingController();
-  TextEditingController passwordTextInputController = TextEditingController();
-  TextEditingController repeatedPasswordTextInputController =
-      TextEditingController();
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  final _nameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  final _pass2Ctrl = TextEditingController();
+  bool _hidePassword = true;
 
   @override
   void dispose() {
-    nameTextInputController.dispose();
-    phoneTextInputController.dispose();
-    emailTextInputController.dispose();
-    passwordTextInputController.dispose();
-    repeatedPasswordTextInputController.dispose();
+    _nameCtrl.dispose();
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    _pass2Ctrl.dispose();
     super.dispose();
   }
 
-  void togglePassword() {
-    setState(() {
-      isHiddenPassword = !isHiddenPassword;
-    });
+  void _togglePassword() {
+    setState(() => _hidePassword = !_hidePassword);
   }
 
-  Future<void> register() async {
-    final isValid = formKey.currentState!.validate();
-    if (!isValid) return;
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) return;
 
-    if (passwordTextInputController.text !=
-        repeatedPasswordTextInputController.text) {
-      SnackBarService.showSnackBar(context, 'Пароли должны совпадать', true);
+    final name = _nameCtrl.text.trim();
+    final email = _emailCtrl.text.trim();
+    final password = _passCtrl.text.trim();
+    final password2 = _pass2Ctrl.text.trim();
+
+    if (password != password2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Пароли должны совпадать'),
+            backgroundColor: Colors.red),
+      );
       return;
     }
 
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailTextInputController.text.trim(),
-          password: passwordTextInputController.text.trim());
-    } on FirebaseAuthException catch (e) {
-      print(e.code);
+    // 1) Сгенерить код
+    final code = (100000 + Random().nextInt(900000)).toString();
 
-      if (e.code == 'email-already-in-use') {
-        SnackBarService.showSnackBar(
-            context, 'Пользователь уже существует', true);
-        return;
-      } else {
-        SnackBarService.showSnackBar(
-          context,
-          'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
-          true,
-        );
-      }
-    }
+    // 2) Записать документ в Firestore
+    await FirebaseFirestore.instance
+        .collection('email_verifications')
+        .doc(email)
+        .set({
+      'code': code,
+      'name': name,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
 
-    context.go('/');
+    // 3) Перейти на экран ввода кода, передав email и пароль
+    GoRouter.of(context).push(
+      '/verify-code',
+      extra: {
+        'email': email,
+        'password': password,
+        'name': name,
+      },
+    );
+  }
+
+  Widget _buildField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    required String? Function(String?) validator,
+    bool obscure = false,
+    Widget? suffix,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscure,
+        validator: validator,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: const Color(0xFFF7FAFC),
+          hintText: hint,
+          prefixIcon: Icon(icon, color: Colors.blueAccent),
+          suffixIcon: suffix,
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Register Page'),
+        leading: BackButton(onPressed: () => context.go('/login')),
+        backgroundColor: Colors.white,
       ),
-      body: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            TextFormField(
-              autocorrect: false,
-              controller: nameTextInputController,
-              validator: ((name) => name == null || name.trim().isEmpty
-                  ? 'Введите правильное Имя'
-                  : null),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Введите Имя',
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _formKey,
+          child: Column(children: [
+            Text(
+              'TASK-WAN',
+              style: GoogleFonts.righteous(
+                fontSize: 30,
+                color: const Color(0xFF006EE9),
               ),
             ),
-            TextFormField(
-              autocorrect: false,
-              controller: phoneTextInputController,
-              validator: ((phone) => phone == null || phone.trim().isEmpty
-                  ? 'Введите правильный номер'
-                  : null),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Введите номер',
+            const SizedBox(height: 4),
+            Text(
+              'Management App',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF9A9A9A),
               ),
             ),
-            TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              autocorrect: false,
-              controller: emailTextInputController,
-              validator: ((email) =>
-                  email != null && !EmailValidator.validate(email)
-                      ? 'Введите правильный email'
-                      : null),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Введите Email',
+            const SizedBox(height: 40),
+            Text(
+              'Create your account',
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            TextFormField(
-              autocorrect: false,
-              obscureText: isHiddenPassword,
-              controller: passwordTextInputController,
-              validator: ((password) => password != null && password.length < 6
-                  ? 'Минимум 6 символов'
-                  : null),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  hintText: 'Введите Пароль',
-                  suffix: InkWell(
-                    child: Icon(
-                      isHiddenPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: Colors.black,
-                    ),
-                  )),
+            const SizedBox(height: 24),
+            _buildField(
+              controller: _nameCtrl,
+              hint: 'Username',
+              icon: Icons.person,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Введите имя' : null,
             ),
-            TextFormField(
-              autocorrect: false,
-              obscureText: isHiddenPassword,
-              controller: repeatedPasswordTextInputController,
-              validator: (value) => value != null && value.length < 6
-                  ? 'Минимум 6 символов'
-                  : null,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  hintText: 'Введите Повторно Пароль',
-                  suffix: InkWell(
-                    child: Icon(
-                      isHiddenPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: Colors.black,
-                    ),
-                  )),
+            _buildField(
+              controller: _emailCtrl,
+              hint: 'Email',
+              icon: Icons.email,
+              validator: (v) => v != null && EmailValidator.validate(v)
+                  ? null
+                  : 'Неверный email',
             ),
-            ElevatedButton(
-                onPressed: () {
-                  register();
-                },
-                child: const Text('Зарегистрироваться')),
-            TextButton(
-              onPressed: () => context.go('/login'),
-              child: const Text(
-                'Войти',
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
+            _buildField(
+              controller: _passCtrl,
+              hint: 'Password',
+              icon: Icons.lock,
+              obscure: _hidePassword,
+              suffix: IconButton(
+                icon: Icon(
+                    _hidePassword ? Icons.visibility : Icons.visibility_off),
+                onPressed: _togglePassword,
+              ),
+              validator: (v) =>
+                  v != null && v.length >= 6 ? null : 'Минимум 6 символов',
+            ),
+            _buildField(
+              controller: _pass2Ctrl,
+              hint: 'Confirm Password',
+              icon: Icons.lock,
+              obscure: _hidePassword,
+              validator: (v) =>
+                  v != null && v.length >= 6 ? null : 'Минимум 6 символов',
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _register,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF006EE9),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Register',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ],
+            const SizedBox(height: 24),
+            Text(
+              '— Or Register with —',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ]),
         ),
       ),
     );

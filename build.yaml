@@ -1,0 +1,10 @@
+targets:
+  $default:
+    builders:
+      drift_dev|drift:
+        # Включаем генерацию JSON-файлов (drift_elements.json)
+        options:
+          write_json: true
+        # Обязательно: генерим для всех ваших .dart в lib
+        generate_for:
+          - lib/**.dart
