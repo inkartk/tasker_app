@@ -10,6 +10,8 @@ import 'package:my_the_best_project/common/di.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
 import 'package:my_the_best_project/features/profile/bloc/cubit_profile.dart';
+import 'package:my_the_best_project/features/statistic/presentation/bloc/statistics_bloc.dart';
+import 'package:my_the_best_project/features/statistic/presentation/bloc/statistics_event.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +36,9 @@ Future<void> main() async {
         BlocProvider<ProfileCubit>(
           create: (_) => sl<ProfileCubit>(),
         ),
+        BlocProvider(
+          create: (_) => sl<StatisticsBloc>()..add(LoadStatisticsEvent()),
+        )
       ],
       child: const MyApp(),
     ),

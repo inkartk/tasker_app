@@ -13,10 +13,15 @@ import 'package:my_the_best_project/features/daily_task/domain/usecases/delete_d
 import 'package:my_the_best_project/features/daily_task/domain/usecases/edit_daily_task.dart';
 import 'package:my_the_best_project/features/daily_task/domain/usecases/get_daily_task.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
-import 'package:my_the_best_project/features/dashboard/presentation/bloc/detail_priority_bloc.dart';
+import 'package:my_the_best_project/features/dashboard/bloc/detail_priority_bloc.dart';
 import 'package:my_the_best_project/features/profile/bloc/cubit_profile.dart';
 import 'package:my_the_best_project/features/profile/data/profile_repo_impl.dart';
 import 'package:my_the_best_project/features/profile/data/profile_repository.dart';
+import 'package:my_the_best_project/features/statistic/data/datasource/statistics_local_data_source.dart';
+import 'package:my_the_best_project/features/statistic/data/repository/statistics_repository_impl.dart';
+import 'package:my_the_best_project/features/statistic/domain/repository/statistic_repository.dart';
+import 'package:my_the_best_project/features/statistic/domain/usecases/get_task_statistics.dart';
+import 'package:my_the_best_project/features/statistic/presentation/bloc/statistics_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -64,4 +69,23 @@ Future<void> init() async {
   sl.registerFactory<ProfileCubit>(
     () => ProfileCubit(sl<ProfileRepository>()),
   );
+
+  // локальный источник для статистики
+  sl.registerLazySingleton<StatisticsLocalDataSource>(
+    () => StatisticsLocalDataSourceImpl(sl()),
+  );
+
+  // репозиторий статистики: передаём userId из текущего пользователя
+  sl.registerLazySingleton<StatisticsRepository>(
+    () => StatisticsRepositoryImpl(
+      localDataSource: sl(),
+      userId: FirebaseAuth.instance.currentUser!.uid,
+    ),
+  );
+
+  // юзкейс получения статистики
+  sl.registerLazySingleton(() => GetTaskStatistics(sl()));
+
+  // BLoC для статистики
+  sl.registerFactory(() => StatisticsBloc(sl()));
 }

@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:my_the_best_project/features/daily_task/domain/entity/daily_task.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
-import 'package:my_the_best_project/features/dashboard/presentation/widgets/detail_widgets.dart';
+import 'package:my_the_best_project/features/dashboard/widgets/detail_widgets.dart';
 
 const _primaryColor = Color(0xFF006EE9);
 
