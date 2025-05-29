@@ -12,11 +12,12 @@ import 'package:my_the_best_project/features/daily_task/domain/entity/daily_task
 import 'package:my_the_best_project/features/daily_task/presentation/pages/add_task_page.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/pages/calendar_task_page.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/pages/edit_page.dart';
-import 'package:my_the_best_project/features/dashboard/presentation/bloc/detail_priority_bloc.dart';
-import 'package:my_the_best_project/features/dashboard/presentation/pages/daily_page.dart';
-import 'package:my_the_best_project/features/dashboard/presentation/pages/priority_page.dart';
+import 'package:my_the_best_project/features/dashboard/bloc/detail_priority_bloc.dart';
+import 'package:my_the_best_project/features/dashboard/pages/daily_page.dart';
+import 'package:my_the_best_project/features/dashboard/pages/priority_page.dart';
 import 'package:my_the_best_project/features/profile/pages/account_page.dart';
 import 'package:my_the_best_project/features/profile/pages/profile_page.dart';
+import 'package:my_the_best_project/features/statistic/presentation/pages/statistics_page.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [
@@ -100,6 +101,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/profile_page',
       builder: (_, __) => const ProfilePage(),
+    ),
+    GoRoute(
+      path: '/statistic',
+      builder: (_, __) => const StatisticsPage(),
     ),
     GoRoute(
       path: '/verify-code',

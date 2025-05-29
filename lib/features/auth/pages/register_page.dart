@@ -116,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
           key: _formKey,
           child: Column(children: [
             Text(
-              'TASK-WAN',
+              'TASKER',
               style: GoogleFonts.righteous(
                 fontSize: 30,
                 color: const Color(0xFF006EE9),

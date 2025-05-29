@@ -58,7 +58,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         Text(
                           DateFormat('EEEE, MMM d yyyy').format(_startDate),
                           style: const TextStyle(
-                              fontSize: 14, color: Colors.black54),
+                              fontSize: 12, color: Colors.black87),
                         ),
                         const Spacer(),
                         const Icon(Icons.notifications, color: _primaryColor),
@@ -78,10 +78,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Have a nice day !',
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                      style: TextStyle(fontSize: 18, color: Colors.black87),
                     ),
                   ),
 
@@ -93,7 +93,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: Text(
                       'My Priority Task',
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -169,7 +169,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: Text(
                       'Daily Task',
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -249,7 +249,6 @@ class PriorityTaskCard extends StatelessWidget {
                   daysLeft,
                   style: const TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

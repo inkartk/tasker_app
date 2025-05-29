@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:my_the_best_project/common/di.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_bloc.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_event.dart';
-import 'package:my_the_best_project/features/dashboard/presentation/bloc/detail_priority_bloc.dart';
+import 'package:my_the_best_project/features/dashboard/bloc/detail_priority_bloc.dart';
 
-import '../../../daily_task/domain/entity/daily_task.dart';
-import '../../../daily_task/domain/entity/subtasks.dart';
+import '../../daily_task/domain/entity/daily_task.dart';
+import '../../daily_task/domain/entity/subtasks.dart';
 
 class PriorityPage extends StatelessWidget {
   final DailyTask initialTask;

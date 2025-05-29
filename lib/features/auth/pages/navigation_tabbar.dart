@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:my_the_best_project/features/daily_task/presentation/pages/calendar_task_page.dart';
-import 'package:my_the_best_project/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:my_the_best_project/features/dashboard/pages/dashboard_page.dart';
 import 'package:my_the_best_project/features/profile/pages/account_page.dart';
+import 'package:my_the_best_project/gen/assets.gen.dart';
 
 class NavigationTabBar extends StatefulWidget {
   final int initialIndex;
@@ -14,6 +16,9 @@ class NavigationTabBar extends StatefulWidget {
 
 class _NavigationTabBarState extends State<NavigationTabBar> {
   late int _selectedIndex;
+
+  static const _selectedColor = Color(0xFF3366FF);
+  static const _unselectedColor = Color(0xFFABCEF5);
 
   final List<Widget> _pages = const [
     DashboardPage(),
@@ -31,30 +36,41 @@ class _NavigationTabBarState extends State<NavigationTabBar> {
     setState(() => _selectedIndex = index);
   }
 
+  BottomNavigationBarItem _buildItem(String assetPath) {
+    return BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        assetPath,
+        width: 32,
+        height: 32,
+        color: _unselectedColor,
+      ),
+      activeIcon: SvgPicture.asset(
+        assetPath,
+        width: 32,
+        height: 32,
+        color: _selectedColor,
+      ),
+      label: '',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'To Do List',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month_sharp),
-            label: 'Notes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'AI Chat',
-          ),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: [
+          _buildItem(Assets.icons.home),
+          _buildItem(Assets.icons.calendar),
+          _buildItem(Assets.icons.person),
         ],
       ),
     );

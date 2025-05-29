@@ -42,7 +42,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       await user.reload();
       emit(ProfileState(profile: p));
     } catch (e) {
-      // при ошибке выключаем лоадер и показываем текст ошибки
       emit(ProfileState(error: e.toString(), profile: p));
     }
   }

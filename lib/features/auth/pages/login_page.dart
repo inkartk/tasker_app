@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 40),
 
                 Text(
-                  'TASK-WAN',
+                  'TASKER',
                   style: GoogleFonts.righteous(
                     fontSize: 30,
                     color: const Color(0xFF006EE9),
