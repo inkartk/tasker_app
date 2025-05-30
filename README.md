@@ -8,6 +8,39 @@ Tasker — это кроссплатформенное мобильное при
 
 ---
 
+## 📸 Скрины
+
+<table>
+  <tr>
+    <td align="center"><strong>🔐 Вход</strong></td>
+    <td align="center"><strong>📝 Регистрация</strong></td>
+    <td align="center"><strong>📝 Верификация</strong></td>
+    <td align="center"><strong>🏠 Главный экран</strong></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/login.png" width="200"/></td>
+    <td><img src="assets/screenshots/register.png" width="200"/></td>
+    <td><img src="assets/screenshots/verify_code.png" width="200"/></td>
+    <td><img src="assets/screenshots/dashboard.png" width="200"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>➕ Добавление задачи</strong></td>
+    <td align="center"><strong>✅ Список задач</strong></td>
+    <td align="center"><strong>📋 Детали задачи</strong></td>
+    <td align="center"><strong>👤 Профиль</strong></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/add_task.png" width="200"/></td>
+    <td><img src="assets/screenshots/task.png" width="200"/></td>
+    <td><img src="assets/screenshots/task_detail.png" width="200"/></td>
+    <td><img src="assets/screenshots/profile.png" width="200"/></td>
+  </tr>
+</table>
+
+
+
+---
+
 ## 🔧 Стек технологий  
 - 🐦 Flutter/Dart  
 - 🧱 Clean Architecture  
@@ -69,35 +102,6 @@ flutter run
 Я — Junior Flutter Developer, стремящийся к качественной архитектуре, масштабируемому коду и продуктивному UI/UX.  
 В этом проекте я продемонстрировал(а) **реальный продакшн-подход**, как на коммерческой разработке: от структуры проекта до соблюдения лучших практик Flutter-разработки.
 
-
-## 📸 Скриншоты
-
-<table>
-  <tr>
-    <td align="center"><strong>🔐 Вход</strong></td>
-    <td align="center"><strong>📝 Регистрация</strong></td>
-    <td align="center"><strong>📝 Верификация</strong></td>
-    <td align="center"><strong>🏠 Главный экран</strong></td>
-  </tr>
-  <tr>
-    <td><img src="assets/screenshots/login.png" width="200"/></td>
-    <td><img src="assets/screenshots/register.png" width="200"/></td>
-    <td><img src="assets/screenshots/verify_code.png" width="200"/></td>
-    <td><img src="assets/screenshots/dashboard.png" width="200"/></td>
-  </tr>
-  <tr>
-    <td align="center"><strong>➕ Добавление задачи</strong></td>
-    <td align="center"><strong>✅ Список задач</strong></td>
-    <td align="center"><strong>📋 Детали задачи</strong></td>
-    <td align="center"><strong>👤 Профиль</strong></td>
-  </tr>
-  <tr>
-    <td><img src="assets/screenshots/add_task.png" width="200"/></td>
-    <td><img src="assets/screenshots/task.png" width="200"/></td>
-    <td><img src="assets/screenshots/task_detail.png" width="200"/></td>
-    <td><img src="assets/screenshots/profile.png" width="200"/></td>
-  </tr>
-</table>
 
 
 
