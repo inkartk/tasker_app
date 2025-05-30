@@ -1,5 +1,3 @@
-// lib/features/profile/presentation/pages/account_page.dart
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,8 +73,6 @@ class _AccountPageState extends State<AccountPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-
-                                  // Профессия
                                   Text(
                                     profile.profession,
                                     style: const TextStyle(
@@ -98,11 +94,7 @@ class _AccountPageState extends State<AccountPage> {
                               ),
                             ],
                           ),
-
-                          // Статистика выполненных задач
-
                           const SizedBox(height: 16),
-
                           _MenuItem(
                             icon: Icons.person,
                             title: 'My Profile',

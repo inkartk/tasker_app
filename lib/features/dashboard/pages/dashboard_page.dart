@@ -50,7 +50,6 @@ class _DashboardPageState extends State<DashboardPage> {
               return ListView(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 children: [
-                  // Header
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
@@ -65,10 +64,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Welcome
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
@@ -84,10 +80,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       style: TextStyle(fontSize: 18, color: Colors.black87),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  // My Priority Task
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
@@ -97,7 +90,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
                   SizedBox(
                     height: 200,
                     child: ListView.separated(
@@ -160,10 +152,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       },
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  // Daily Task
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
@@ -173,7 +162,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
                   ...dailyList.map((t) {
                     return GestureDetector(
                       onTap: () => context.go('/daily_page', extra: t),
@@ -183,7 +171,6 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     );
                   }),
-
                   const SizedBox(height: 16),
                 ],
               );
@@ -198,8 +185,6 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 }
-
-// Компоненты PriorityTaskCard и DailyTaskTile остаются без изменений
 
 class PriorityTaskCard extends StatelessWidget {
   final IconData icon;
@@ -254,7 +239,6 @@ class PriorityTaskCard extends StatelessWidget {
               ),
             ],
           ),
-
           Expanded(
             child: Center(
               child: Column(
@@ -274,8 +258,6 @@ class PriorityTaskCard extends StatelessWidget {
               ),
             ),
           ),
-
-          // Прогресс
           const Align(
             alignment: Alignment.centerLeft,
             child: Text(

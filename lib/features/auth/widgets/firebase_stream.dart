@@ -31,7 +31,6 @@ class FirebaseStream extends StatelessWidget {
               );
         });
 
-        // И возвращаем основной экран
         return const NavigationTabBar();
       },
     );

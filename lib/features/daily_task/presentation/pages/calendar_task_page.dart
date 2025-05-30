@@ -78,7 +78,6 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
         ),
         body: Column(
           children: [
-            // Календарь
             ToDoCalendar(
               startDate: _selectedDate,
               onDateSelected: (date) {
@@ -117,7 +116,6 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
 
                     return TabBarView(
                       children: [
-                        // ===== Priority Task View =====
                         ListView.separated(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           itemCount: priority.length,
@@ -196,8 +194,6 @@ class _CalendarTaskPageState extends State<CalendarTaskPage> {
                             );
                           },
                         ),
-
-                        // ===== Daily Task View =====
                         ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           itemCount: daily.length,

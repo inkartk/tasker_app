@@ -41,7 +41,6 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
     if (ts == null || now.difference(ts) > const Duration(minutes: 1)) {
       await doc.reference.delete();
 
-      // Сгенерировать новый код
       final newCode =
           (100000 + DateTime.now().millisecondsSinceEpoch % 900000).toString();
 
@@ -165,9 +164,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
               ),
             const SizedBox(height: 12),
             TextButton(
-              onPressed: () {
-                // TODO: Resend logic
-              },
+              onPressed: () {},
               child: const Text.rich(
                 TextSpan(
                   text: "Don't receive a code? ",

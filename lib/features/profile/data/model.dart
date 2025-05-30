@@ -1,5 +1,3 @@
-// models/user_profile.dart
-
 class UserProfile {
   final String id;
   final String email;
@@ -8,7 +6,6 @@ class UserProfile {
   DateTime birthDate;
   String? avatarUrl;
 
-  /// Новое поле локации
   final LocationData? location;
 
   UserProfile({

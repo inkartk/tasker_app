@@ -50,10 +50,8 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    // 1) Сгенерить код
     final code = (100000 + Random().nextInt(900000)).toString();
 
-    // 2) Записать документ в Firestore
     await FirebaseFirestore.instance
         .collection('email_verifications')
         .doc(email)
@@ -63,7 +61,6 @@ class _RegisterPageState extends State<RegisterPage> {
       'timestamp': FieldValue.serverTimestamp(),
     });
 
-    // 3) Перейти на экран ввода кода, передав email и пароль
     GoRouter.of(context).push(
       '/verify-code',
       extra: {

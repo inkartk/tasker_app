@@ -1,5 +1,3 @@
-// lib/features/profile/presentation/pages/profile_page.dart
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,8 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:my_the_best_project/features/profile/bloc/cubit_profile.dart';
 import 'package:my_the_best_project/features/profile/data/model.dart';
 
-/// Обёртка, которая ждёт, пока [ProfileCubit] подгрузит профиль,
-/// и переключается с индикатора на форму.
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -34,8 +30,6 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-/// Форма редактирования профиля.
-/// Здесь безопасно брать данные из [widget.profile] и инициализировать контроллеры.
 class ProfileForm extends StatefulWidget {
   final UserProfile profile;
   const ProfileForm({super.key, required this.profile});
@@ -48,7 +42,6 @@ class _ProfileFormState extends State<ProfileForm> {
   late final TextEditingController _nameCtrl;
   late final TextEditingController _profCtrl;
   late final TextEditingController _birthCtrl;
-  // late DateTime _birth;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -91,21 +84,16 @@ class _ProfileFormState extends State<ProfileForm> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // Имя
           TextField(
             controller: _nameCtrl,
             decoration: const InputDecoration(labelText: 'Name'),
           ),
           const SizedBox(height: 12),
-
-          // Профессия
           TextField(
             controller: _profCtrl,
             decoration: const InputDecoration(labelText: 'Profession'),
           ),
           const SizedBox(height: 12),
-
-          // Дата рождения
           TextField(
             controller: _birthCtrl,
             readOnly: true,
@@ -116,8 +104,6 @@ class _ProfileFormState extends State<ProfileForm> {
             onTap: _pickDate,
           ),
           const SizedBox(height: 12),
-
-          // Email (только просмотр)
           TextField(
             enabled: false,
             decoration: InputDecoration(
@@ -125,10 +111,7 @@ class _ProfileFormState extends State<ProfileForm> {
               hintText: profile.email,
             ),
           ),
-
           const Spacer(),
-
-          // Кнопка Save
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -140,7 +123,7 @@ class _ProfileFormState extends State<ProfileForm> {
                       await context.read<ProfileCubit>().saveChanges(
                             name: _nameCtrl.text,
                             profession: _profCtrl.text,
-                            birthDate: parsed, // теперь это DateTime
+                            birthDate: parsed,
                           );
                       context.go('/main?tab=2');
                     },

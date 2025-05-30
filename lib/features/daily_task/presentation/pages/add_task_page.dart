@@ -253,8 +253,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       maxLines: 5,
                     ),
                     const SizedBox(height: 24),
-
-                    // === только для Priority Task ===
                     if (_selectedCategory == 0) ...[
                       const Text('To do list',
                           style: TextStyle(
@@ -308,7 +306,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       ),
                       const SizedBox(height: 24),
                     ],
-
                     BlocConsumer<DailyTaskBloc, DailyTaskState>(
                       listener: (ctx, state) {
                         if (state is DailyTaskLoaded) {
@@ -346,7 +343,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         );
                       },
                     ),
-
                     const SizedBox(height: 16),
                   ],
                 ),
