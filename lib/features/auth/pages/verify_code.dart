@@ -101,7 +101,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
           children: [
             const SizedBox(height: 10),
             const Text(
-              'TASK-WAN',
+              'TASKER',
               style: TextStyle(
                 fontSize: 28,
                 color: Color(0xFF006EE9),
