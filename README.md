@@ -74,6 +74,14 @@ flutter run
 
 
 ## 📸 Скриншоты
+### 🔐 Вход
+<img src="assets/screenshots/login.png" width="300"/>
+
+### 📝 Регистрация
+<img src="assets/screenshots/register.png" width="300"/>
+
+### 📝 Верификация
+<img src="assets/screenshots/verify" width="300"/>
 
 ### 🏠 Главный экран (Dashboard)
 <img src="assets/screenshots/dashboard.png" width="300"/>
@@ -87,11 +95,8 @@ flutter run
 ### 📋 Детали задачи
 <img src="assets/screenshots/task_detail.png" width="300"/>
 
-### 🔐 Вход
-<img src="assets/screenshots/login.png" width="300"/>
-
-### 📝 Регистрация
-<img src="assets/screenshots/register.png" width="300"/>
-
 ### 👤 Профиль
 <img src="assets/screenshots/profile.png" width="300"/>
+
+
+
