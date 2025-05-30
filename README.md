@@ -1,4 +1,4 @@
-# 📝 Tasker App — Умный трекер задач с поддержкой подзадач и календаря
+# 📝 Tasker App — Умный трекер задач с поддержкой календаря
 
 🚀 **Описание**  
 Tasker — это кроссплатформенное мобильное приложение для управления повседневными задачами.  
@@ -9,13 +9,11 @@ Tasker — это кроссплатформенное мобильное при
 ---
 
 ## 🔧 Стек технологий  
-- 🐦 Flutter + Dart  
+- 🐦 Flutter/Dart  
 - 🧱 Clean Architecture  
-- 🧠 Bloc / flutter_bloc  
+- 🧠 Bloc
 - 🗂 Drift (SQLite)  
 - ☁️ Firebase Authentication  
-- 📅 TableCalendar, DateTime utils  
-- 🔒 Безопасная авторизация (в том числе через OTP)  
 
 ---
 
@@ -31,7 +29,6 @@ Tasker — это кроссплатформенное мобильное при
 ---
 
 ## 🧠 Архитектура  
-Проект строго разделён на 3 слоя:
 - `data` — локальный и удалённый источники данных, модели и мапперы  
 - `domain` — use cases и бизнес-логика  
 - `presentation` — UI + Bloc с состояниями и событиями  
@@ -74,29 +71,34 @@ flutter run
 
 
 ## 📸 Скриншоты
-### 🔐 Вход
-<img src="assets/screenshots/login.png" width="300"/>
 
-### 📝 Регистрация
-<img src="assets/screenshots/register.png" width="300"/>
+<table>
+  <tr>
+    <td align="center"><strong>🔐 Вход</strong></td>
+    <td align="center"><strong>📝 Регистрация</strong></td>
+    <td align="center"><strong>📝 Верификация</strong></td>
+    <td align="center"><strong>🏠 Главный экран</strong></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/login.png" width="200"/></td>
+    <td><img src="assets/screenshots/register.png" width="200"/></td>
+    <td><img src="assets/screenshots/verify_code.png" width="200"/></td>
+    <td><img src="assets/screenshots/dashboard.png" width="200"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>➕ Добавление задачи</strong></td>
+    <td align="center"><strong>✅ Список задач</strong></td>
+    <td align="center"><strong>📋 Детали задачи</strong></td>
+    <td align="center"><strong>👤 Профиль</strong></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/add_task.png" width="200"/></td>
+    <td><img src="assets/screenshots/task.png" width="200"/></td>
+    <td><img src="assets/screenshots/task_detail.png" width="200"/></td>
+    <td><img src="assets/screenshots/profile.png" width="200"/></td>
+  </tr>
+</table>
 
-### 📝 Верификация
-<img src="assets/screenshots/verify_code.png" width="300"/>
-
-### 🏠 Главный экран (Dashboard)
-<img src="assets/screenshots/dashboard.png" width="300"/>
-
-### ➕ Добавление задачи
-<img src="assets/screenshots/add_task.png" width="300"/>
-
-### ✅ Список задач
-<img src="assets/screenshots/task.png" width="300"/>
-
-### 📋 Детали задачи
-<img src="assets/screenshots/task_detail.png" width="300"/>
-
-### 👤 Профиль
-<img src="assets/screenshots/profile.png" width="300"/>
 
 
 
