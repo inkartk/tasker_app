@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
-// DailyTask feature imports (new)
 import 'package:my_the_best_project/features/daily_task/data/local_data_source/daily_app_database.dart';
 import 'package:my_the_best_project/features/daily_task/data/local_data_source/daily_task_local_data_source.dart';
 import 'package:my_the_best_project/features/daily_task/data/repository/daily_task_repository_impl.dart';
@@ -26,24 +25,20 @@ import 'package:my_the_best_project/features/statistic/presentation/bloc/statist
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // Data sources
   sl.registerLazySingleton<DailyAppDatabase>(() => DailyAppDatabase());
   sl.registerLazySingleton<DailyTaskLocalDataSource>(
     () => DailyTaskLocalDataSourceImpl(db: sl()),
   );
 
-  // Repository
   sl.registerLazySingleton<DailyTaskRepository>(
     () => DailyTaskRepositoryImpl(localDs: sl()),
   );
 
-  // Use cases
   sl.registerLazySingleton(() => GetDailyTask(dailyTaskRepository: sl()));
   sl.registerLazySingleton(() => AddDailyTask(dailyTaskRepository: sl()));
   sl.registerLazySingleton(() => DeleteDailyTask(dailyTaskRepository: sl()));
   sl.registerLazySingleton(() => EditDailyTask(dailyTaskRepository: sl()));
 
-  // Bloc
   sl.registerFactory(() => DailyTaskBloc(
         addDailyTask: sl(),
         deleteDailyTask: sl(),
@@ -70,12 +65,10 @@ Future<void> init() async {
     () => ProfileCubit(sl<ProfileRepository>()),
   );
 
-  // локальный источник для статистики
   sl.registerLazySingleton<StatisticsLocalDataSource>(
     () => StatisticsLocalDataSourceImpl(sl()),
   );
 
-  // репозиторий статистики: передаём userId из текущего пользователя
   sl.registerLazySingleton<StatisticsRepository>(
     () => StatisticsRepositoryImpl(
       localDataSource: sl(),
@@ -83,9 +76,7 @@ Future<void> init() async {
     ),
   );
 
-  // юзкейс получения статистики
   sl.registerLazySingleton(() => GetTaskStatistics(sl()));
 
-  // BLoC для статистики
   sl.registerFactory(() => StatisticsBloc(sl()));
 }

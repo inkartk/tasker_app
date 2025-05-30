@@ -90,10 +90,7 @@ class _DailyTaskDetailPageState extends State<DailyTaskDetailPage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 24),
-
-              // Dates
               Row(
                 children: [
                   DateColumn(
@@ -107,10 +104,7 @@ class _DailyTaskDetailPageState extends State<DailyTaskDetailPage> {
                           DateFormat('d MMM yyyy').format(widget.task.endTime)),
                 ],
               ),
-
               const SizedBox(height: 24),
-
-              // Countdown
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -119,10 +113,7 @@ class _DailyTaskDetailPageState extends State<DailyTaskDetailPage> {
                   TimeBox(value: '$minutes', label: 'minutes'),
                 ],
               ),
-
               const SizedBox(height: 32),
-
-              // Description
               const Text(
                 'Description',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -133,17 +124,13 @@ class _DailyTaskDetailPageState extends State<DailyTaskDetailPage> {
                 style: const TextStyle(
                     fontSize: 14, color: Colors.black87, height: 1.4),
               ),
-
               const SizedBox(height: 32),
-
-              // Finish button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: widget.task.isDone
                       ? null
                       : () {
-                          // mark as done
                           final updated = widget.task.copyWith(isDone: true);
                           context
                               .read<DailyTaskBloc>()

@@ -82,32 +82,21 @@ class _PriorityView extends StatelessWidget {
                   return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Заголовок + кнопка закрыть
                         _buildHeader(context, theme, t.title),
-
                         const SizedBox(height: 24),
-                        // Даты
                         _buildDateRow(theme, t.startTime, t.endTime),
-
                         const SizedBox(height: 24),
-                        // Тайм-карточки
                         _buildTimeCards(daysLeft, hoursLeft),
-
                         const SizedBox(height: 24),
-                        // Описание
                         _buildSectionTitle('Description', theme),
                         const SizedBox(height: 8),
                         Text(t.description, style: theme.textTheme.bodyMedium),
                         const SizedBox(height: 24),
-
                         if (t.subTasks.isNotEmpty) ...[
-                          // Прогресс
                           _buildSectionTitle('Progress', theme),
                           const SizedBox(height: 8),
                           _buildProgressBar(state.progress),
-
                           const SizedBox(height: 24),
-                          // Список подзадач
                           _buildSectionTitle('To do List', theme),
                           const SizedBox(height: 8),
                           _buildSubTasksList(context, t.subTasks),
@@ -119,7 +108,6 @@ class _PriorityView extends StatelessWidget {
                               onPressed: t.isDone
                                   ? null
                                   : () {
-                                      // mark as done
                                       final updated = t.copyWith(isDone: true);
                                       context.read<DailyTaskBloc>().add(
                                           EditDailyTaskEvent(

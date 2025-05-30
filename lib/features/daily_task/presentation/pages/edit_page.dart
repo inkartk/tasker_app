@@ -1,5 +1,3 @@
-// lib/features/daily_task/presentation/pages/edit_task_page.dart
-
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +12,6 @@ import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_
 import 'package:my_the_best_project/features/daily_task/presentation/bloc/daily_task_state.dart';
 
 class EditTaskPage extends StatefulWidget {
-  /// Передаём существующую задачу
   final DailyTask task;
 
   const EditTaskPage({super.key, required this.task});
@@ -48,11 +45,11 @@ class _EditTaskPageState extends State<EditTaskPage> {
     if (t.subTasks.isNotEmpty) {
       for (var sub in t.subTasks) {
         _subControllers.add(TextEditingController(text: sub.title));
-        _subDone.add(sub.isDone); // вот сюда подтягиваем исходный isDone
+        _subDone.add(sub.isDone);
       }
     } else {
       _subControllers.add(TextEditingController());
-      _subDone.add(false); // для новой строки — false
+      _subDone.add(false);
     }
   }
 
@@ -186,11 +183,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
       final text = _subControllers[i].text.trim();
       if (text.isEmpty) continue;
 
-      // <<< ЗДЕСЬ БЫЛА ОШИБКА >>>
       final doneFlag = _subDone[i];
 
       if (i < widget.task.subTasks.length) {
-        // существующая подтаска: сохраняем её id и новый isDone
         final original = widget.task.subTasks[i];
         subs.add(
           original.copyWith(
@@ -199,7 +194,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
           ),
         );
       } else {
-        // новая подтаска: id остаётся null
         subs.add(
           SubTask(
             title: text,
@@ -267,7 +261,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 24),
                     Row(children: [
                       _buildDateField(
@@ -309,8 +302,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       maxLines: 5,
                     ),
                     const SizedBox(height: 24),
-
-                    // === только для Priority Task ===
                     if (_selectedCategory == 0) ...[
                       const Text('To do list',
                           style: TextStyle(
@@ -365,7 +356,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       ),
                       const SizedBox(height: 24),
                     ],
-
                     BlocConsumer<DailyTaskBloc, DailyTaskState>(
                       listener: (ctx, state) {
                         if (state is DailyTaskLoaded) {
@@ -403,7 +393,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                         );
                       },
                     ),
-
                     const SizedBox(height: 16),
                   ],
                 ),

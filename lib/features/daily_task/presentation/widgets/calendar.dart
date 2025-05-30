@@ -1,13 +1,9 @@
-// lib/features/todo/presentation/widgets/todo_calendar.dart
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ToDoCalendar extends StatefulWidget {
-  /// Дата, которую нужно изначально центрировать
   final DateTime startDate;
 
-  /// Коллбэк при смене выбранного дня
   final ValueChanged<DateTime> onDateSelected;
 
   const ToDoCalendar({
@@ -21,10 +17,8 @@ class ToDoCalendar extends StatefulWidget {
 }
 
 class _ToDoCalendarState extends State<ToDoCalendar> {
-  /// Базовая дата для расчёта индексов
   static final _refDate = DateTime(2000, 1, 1);
 
-  /// Сколько ячеек мы хотим показывать
   static const _visibleDays = 7;
 
   late final PageController _pageController;
@@ -34,10 +28,8 @@ class _ToDoCalendarState extends State<ToDoCalendar> {
   void initState() {
     super.initState();
 
-    // стартовое выбранное
     _selectedDate = widget.startDate;
 
-    // вычисляем, сколько дней прошло с _refDate до стартовой
     final initialPage = widget.startDate.difference(_refDate).inDays;
 
     _pageController = PageController(
@@ -45,7 +37,6 @@ class _ToDoCalendarState extends State<ToDoCalendar> {
       viewportFraction: 1 / _visibleDays,
     );
 
-    // уведомляем, что выбран startDate
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.onDateSelected(_selectedDate);
     });
@@ -69,7 +60,6 @@ class _ToDoCalendarState extends State<ToDoCalendar> {
         child: PageView.builder(
           controller: _pageController,
           onPageChanged: (index) {
-            // когда переключились на новую «страницу» = день
             final newDate = _refDate.add(Duration(days: index));
             setState(() => _selectedDate = newDate);
             widget.onDateSelected(newDate);

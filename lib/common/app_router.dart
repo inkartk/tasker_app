@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,8 @@ import 'package:my_the_best_project/features/dashboard/pages/priority_page.dart'
 import 'package:my_the_best_project/features/profile/pages/account_page.dart';
 import 'package:my_the_best_project/features/profile/pages/profile_page.dart';
 import 'package:my_the_best_project/features/statistic/presentation/pages/statistics_page.dart';
+
+final authStream = FirebaseAuth.instance.authStateChanges();
 
 final GoRouter appRouter = GoRouter(
   routes: [
@@ -109,7 +112,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/verify-code',
       builder: (_, state) {
-        final data = state.extra as Map<String, String>;
+        final data = state.extra as Map<String, dynamic>;
         return VerifyCodePage(
           email: data['email']!,
           password: data['password']!,

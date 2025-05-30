@@ -73,7 +73,6 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 40),
-
                 Text(
                   'TASKER',
                   style: GoogleFonts.righteous(
@@ -89,9 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: const Color(0xFF9A9A9A),
                   ),
                 ),
-
                 const SizedBox(height: 60),
-
                 Text(
                   'Login to your account',
                   style: GoogleFonts.poppins(
@@ -100,7 +97,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 30),
-
                 TextFormField(
                   controller: emailTextInputController,
                   keyboardType: TextInputType.emailAddress,
@@ -122,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
                           : null,
                 ),
                 const SizedBox(height: 20),
-
                 TextFormField(
                   controller: passwordTextInputController,
                   obscureText: isHiddenPassword,
@@ -152,8 +147,6 @@ class _LoginPageState extends State<LoginPage> {
                           ? 'Минимум 6 символов'
                           : null,
                 ),
-
-                // Forgot password
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -167,10 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 25),
-
-                // Login button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -192,10 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 35),
-
-                // Sign up
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

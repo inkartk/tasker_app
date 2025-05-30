@@ -16,33 +16,43 @@ import 'package:my_the_best_project/features/statistic/presentation/bloc/statist
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await init();
 
   FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-
   FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-
   FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
 
-  final uid = FirebaseAuth.instance.currentUser!.uid;
+  runApp(const AppEntry());
+}
 
-  await init(); // ваш DI / BLoC и т.п.
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<DailyTaskBloc>(
-          create: (_) => sl<DailyTaskBloc>()
-            ..add(LoadDailyTaskEvent(userID: uid, day: DateTime.now())),
-        ),
-        BlocProvider<ProfileCubit>(
-          create: (_) => sl<ProfileCubit>(),
-        ),
-        BlocProvider(
-          create: (_) => sl<StatisticsBloc>()..add(LoadStatisticsEvent()),
-        )
-      ],
-      child: const MyApp(),
-    ),
-  );
+class AppEntry extends StatelessWidget {
+  const AppEntry({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
+
+        return MultiBlocProvider(
+          providers: [
+            if (user != null)
+              BlocProvider<DailyTaskBloc>(
+                create: (_) => sl<DailyTaskBloc>()
+                  ..add(LoadDailyTaskEvent(
+                      userID: user.uid, day: DateTime.now())),
+              ),
+            BlocProvider(create: (_) => sl<ProfileCubit>()),
+            BlocProvider(
+                create: (_) =>
+                    sl<StatisticsBloc>()..add(LoadStatisticsEvent())),
+          ],
+          child: const MyApp(),
+        );
+      },
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

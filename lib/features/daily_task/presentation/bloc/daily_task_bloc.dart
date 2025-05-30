@@ -57,7 +57,6 @@ class DailyTaskBloc extends Bloc<DailyTaskEvent, DailyTaskState> {
       try {
         final tasks = await getDailyTask(event.userID, event.day);
 
-        // границы дня: от 00:00 до 23:59:59.999
         final startOfDay = DateTime(
           event.day.year,
           event.day.month,
