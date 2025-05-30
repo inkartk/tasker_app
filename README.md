@@ -81,7 +81,7 @@ flutter run
 <img src="assets/screenshots/register.png" width="300"/>
 
 ### 📝 Верификация
-<img src="assets/screenshots/verify.png" width="300"/>
+<img src="assets/screenshots/verify" width="300"/>
 
 ### 🏠 Главный экран (Dashboard)
 <img src="assets/screenshots/dashboard.png" width="300"/>
